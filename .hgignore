@@ -1,0 +1,46 @@
+syntax: glob
+*.py[cdo]
+
+*/__pycache__/
+
+# Translations
+*.mo
+
+# Installer logs
+pip-log.txt
+
+# C Extensions
+*.so
+
+# Unit test / coverage reports
+.coverage
+.tox
+nosetests.xml
+
+# PyCharm
+.idea/
+
+syntax: regexp
+
+# Packages/Buildout
+^.*\.egg$
+^.*\.egg-info$
+^bin$
+^build$
+^develop-eggs$
+^dist$
+^eggs$
+^lib$
+^lib64$
+^parts$
+^sdist$
+^var$
+^MANIFEST$
+^\.installed.cfg$
+
+# Project
+^tags$
+^\.mr\.developer\.cfg$
+^\.project$
+^\.pydevproject
+^\.ropeproject
