@@ -1,4 +1,10 @@
 import os
+
+# Caching dict.
+import io
+
+_f_cache = {}
+
 class ConfigFile(object):
     """
     The abstract base class for a ConfigFile object. All config files extend from this.
@@ -8,8 +14,10 @@ class ConfigFile(object):
     """
 
     def __init__(self, fd):
+        self.loaded = False
         # Check if fd is a string
         if isinstance(fd, str):
+            self.path = fd.replace('/', '.').replace('\\', '.')
             # Open the file.
             try:
                 fd = open(fd)
@@ -20,7 +28,23 @@ class ConfigFile(object):
                 # Open it in write mode, then re-open it.
                 open(fd, 'w').close()
                 fd = open(fd, 'r')
+        else:
+            self.path = fd.name.replace('/', '.').replace('\\', '.')
         self.fd = fd
+
+    def __new__(cls, fd, *args, **kwargs):
+        if isinstance(fd, str):
+            path = fd.replace('/', '.').replace('\\', '.')
+        else:
+            path = fd.name.replace('/', '.').replace('\\', '.')
+        cached_ob = get_from_cache(path)
+        if cached_ob is None:
+            ob = super().__new__(cls)
+            add_to_cache(ob)
+            return ob
+        else:
+            return cached_ob
+
 
     def dump(self):
         """
@@ -52,3 +76,14 @@ class ConfigFile(object):
         del newcls
         del ndict
         # Reloaded.
+
+def add_to_cache(ob: ConfigFile):
+    _f_cache[ob.path] = ob
+
+def del_from_cache(ob: ConfigFile):
+    if ob.path in _f_cache:
+        del _f_cache[ob.path]
+
+def get_from_cache(path: str):
+    if path in _f_cache:
+        return _f_cache[path]

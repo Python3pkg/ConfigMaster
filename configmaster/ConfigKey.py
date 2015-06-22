@@ -1,11 +1,32 @@
 class ConfigKey(object):
+    """
+    A ConfigKey object is a collection that is stored via class attributes.
+
+    >>> d = {"a": 2, "b": [1, 2, {"c": 3}], {"d": 4}}
+    >>> config = ConfigKey.parse_data(d)
+    >>> config.a # Returns 2
+    >>> config.b[1] # Returns 2
+    >>> config.b[3] # Returns a new ConfigKey, as it's a dict.
+
+    ConfigKeys take in data from dicts, and set attributes of themselves to accommodate the items inside the dictionaries.
+    There are special cases for handling lists, and all objects inside a list are automatically parsed appropriately, with dicts turning into ConfigKeys.
+
+    Currently, ConfigKeys do not support iteration. If you wish to iterate over a ConfigKey, you must use the dump() method.
+    """
     def __init__(self):
+        """
+        You should not be creating a new ConfigKey instance yourself. Use parse_data instead.
+        """
         self.parsed = False
 
-    def dump(self):
+    def dump(self) -> dict:
+        """
+        Dumps data from the ConfigKey into a dict.
+        :return: The keys and values from the ConfigKey encapsulated in a dict.
+        """
         d = {}
         for item in self.__dict__:
-            if item in ['parsed', 'dump', 'parse_data']:
+            if item in ['parsed', 'dump', 'parse_data', 'iter_list']:
                 continue
             if isinstance(self.__dict__[item], ConfigKey):
                 d[item] = self.__dict__[item].dump()
