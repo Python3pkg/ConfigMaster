@@ -41,7 +41,7 @@ How to use
 ConfigMaster handles everything for you. Simply specify the location of
 your file, and the values will be automatically loaded for you.
 
-code-block:: python
+::
 
     >>> from configmaster import YAMLConfigFile  
     >>> cfg = YAMLConfigFile.YAMLConfigFile("test.yml") # Created automatically if it doesn't exist  
@@ -49,7 +49,7 @@ code-block:: python
 To access config values, simply get the attribute you want from the
 config object stored.
 
-code-block:: python
+::
 
     # YAML data is {"a": 1, "b": [1, 2], "c": {"d": 3}}  
     >>> cfg.config.a  
@@ -63,20 +63,20 @@ To populate your config data, just pass a dict to initial\_populate. If
 the file is empty, this gives it default values, and returns True. If it
 isn't, nothing happens.
 
-code-block:: python
+::
 
     >>> pop = cfg.initial_populate({"a": 1, "b": [1, 2], "c": {"d": 3})
     >>> if pop: cfg.dump() and cfg.reload() # Dump data and reload from disk.
 
 To save your data, simply run .dump().
 
-code-block:: python
+::
 
     >>> cfg.dump()
 
 Need to get the raw dict form of a ConfigKey? Use .dump() on that!
 
-code-block:: python
+::
 
     >>> cfg.config.dump()
     {"a": 1, "b": [1, 2], "c": {"d": 3}
