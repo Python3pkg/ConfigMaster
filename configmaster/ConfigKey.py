@@ -19,6 +19,10 @@ class ConfigKey(object):
         """
         self.parsed = False
 
+    def __contains__(self, item):
+        # Sigh.
+        return item in self.__dict__
+
     def dump(self) -> dict:
         """
         Dumps data from the ConfigKey into a dict.
