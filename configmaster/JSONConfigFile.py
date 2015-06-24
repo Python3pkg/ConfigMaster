@@ -26,7 +26,7 @@ class JSONConfigFile(ConfigFile):
     >>> # Sample JSON data is {"abc": [1, 2, 3]}
     ... print(cfg.config.abc) # Prints [1, 2, 3]
     """
-    def __init__(self, fd: io.TextIOBase):
+    def __init__(self, fd: io.TextIOBase, obj_decoder: object=None):
         """
         :param fd: The file to load.
                 Either a string or a :io.TextIOBase: object.
@@ -34,12 +34,16 @@ class JSONConfigFile(ConfigFile):
         super().__init__(fd)
         self.config = None
 
+        # A custom object decoder hook.
+        self.decoder = obj_decoder
+
         self.load()
+
 
     def load(self):
         # Load the data from the JSON file.
         try:
-            data = json.load(self.fd)
+            data = json.load(self.fd, object_hook=self.decoder)
         except json.JSONDecodeError as e:
             raise exc.LoaderException("Could not decode JSON file: {}".format(e))
         # Serialize the data into new sets of ConfigKey classes.
@@ -55,6 +59,7 @@ class JSONConfigFile(ConfigFile):
         self.fd = open(name, 'w')
 
         data = self.config.dump()
+
         json.dump(data, self.fd)
         self.reload()
 
