@@ -2,6 +2,7 @@ import json
 import io
 from configmaster.ConfigFile import ConfigFile
 from configmaster import ConfigKey
+from configmaster import exc
 
 
 class JSONConfigFile(ConfigFile):
@@ -37,7 +38,10 @@ class JSONConfigFile(ConfigFile):
 
     def load(self):
         # Load the data from the JSON file.
-        data = json.load(self.fd)
+        try:
+            data = json.load(self.fd)
+        except json.JSONDecodeError as e:
+            raise exc.LoaderException("Could not decode JSON file: {}".format(e))
         # Serialize the data into new sets of ConfigKey classes.
         self.config = ConfigKey.ConfigKey.parse_data(data)
 
