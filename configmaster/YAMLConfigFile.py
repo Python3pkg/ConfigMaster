@@ -104,14 +104,3 @@ class YAMLConfigFile(ConfigFile):
         yaml.dump(data, self.fd, Dumper=self.dumper, default_flow_style=False)
         self.reload()
 
-    def initial_populate(self, data):
-        """
-        Repopulate the ConfigMaster object with data.
-        :param data: The data to populate.
-        :return: If it was populated.
-        """
-        if self.config.parsed:
-            return False
-        # Otherwise, create a new ConfigKey.
-        self.config = ConfigKey.ConfigKey.parse_data(data)
-        return True

@@ -1,9 +1,6 @@
 import os
 
-# Caching dict.
-import io
-
-_f_cache = {}
+from configmaster import ConfigKey
 
 class ConfigFile(object):
     """
@@ -31,20 +28,6 @@ class ConfigFile(object):
         else:
             self.path = fd.name.replace('/', '.').replace('\\', '.')
         self.fd = fd
-
-    def __new__(cls, fd, *args, **kwargs):
-        if isinstance(fd, str):
-            path = fd.replace('/', '.').replace('\\', '.')
-        else:
-            path = fd.name.replace('/', '.').replace('\\', '.')
-        cached_ob = get_from_cache(path)
-        if cached_ob is None:
-            ob = super().__new__(cls)
-            add_to_cache(ob)
-            return ob
-        else:
-            return cached_ob
-
 
     def dump(self):
         """
@@ -77,13 +60,14 @@ class ConfigFile(object):
         del ndict
         # Reloaded.
 
-def add_to_cache(ob: ConfigFile):
-    _f_cache[ob.path] = ob
-
-def del_from_cache(ob: ConfigFile):
-    if ob.path in _f_cache:
-        del _f_cache[ob.path]
-
-def get_from_cache(path: str):
-    if path in _f_cache:
-        return _f_cache[path]
+    def initial_populate(self, data):
+        """
+        Repopulate the ConfigMaster object with data.
+        :param data: The data to populate.
+        :return: If it was populated.
+        """
+        if self.config.parsed:
+            return False
+        # Otherwise, create a new ConfigKey.
+        self.config = ConfigKey.ConfigKey.parse_data(data)
+        return True
