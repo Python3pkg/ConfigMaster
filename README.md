@@ -1,7 +1,7 @@
 ConfigMaster
 ------------
 
-**What is ConfigMaster?**  
+## What is ConfigMaster?  
 ConfigMaster is a simple library for accessing config files programmatically. No longer will you have to mess with list lookups and dict lookups when you wish to load a config file.  
 Instead, objects in the file are accessed as simple class attributes.  
 
