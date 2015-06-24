@@ -45,20 +45,8 @@ class ConfigFile(object):
         """
         Automatically reloads the config file.
 
-        This simply re-creates the class, copies over it's __dict__ and deletes the re-created class.
-        """
-        # Close the FD.
-        self.fd.close()
-        # Reload the file.
-        newcls = self.__class__(self.fd.name)
-        # Get the new class' dict.
-        ndict = newcls.__dict__
-        # Update our own dict.
-        self.__dict__ = ndict
-        # Delete the old class.
-        del newcls
-        del ndict
-        # Reloaded.
+        This is just an alias for self.load()."""
+        self.load()
 
     def initial_populate(self, data):
         """
