@@ -1,3 +1,6 @@
+import copy
+
+
 class ConfigKey(object):
     """
     A ConfigKey object is a collection that is stored via class attributes.
@@ -10,14 +13,17 @@ class ConfigKey(object):
 
     ConfigKeys take in data from dicts, and set attributes of themselves to accommodate the items inside the dictionaries.
     There are special cases for handling lists, and all objects inside a list are automatically parsed appropriately, with dicts turning into ConfigKeys.
-
-    Currently, ConfigKeys do not support iteration. If you wish to iterate over a ConfigKey, you must use the dump() method.
     """
     def __init__(self):
         """
         You should not be creating a new ConfigKey instance yourself. Use parse_data instead.
         """
         self.parsed = False
+
+    def __iter__(self):
+        ndict = copy.copy(self.__dict__)
+        ndict.pop('parsed')
+        return ndict.__iter__()
 
     def __contains__(self, item):
         # Sigh.
