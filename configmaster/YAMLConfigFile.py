@@ -1,6 +1,10 @@
+try:
+    import yaml
+    import yaml.scanner
+except ImportError:
+    raise exc.FiletypeNotSupportedException("You have not installed the PyYAML library. Install it via `pip install PyYAML`.")
+
 import io
-import yaml
-import yaml.scanner
 from .ConfigFile import ConfigFile
 
 from . import exc

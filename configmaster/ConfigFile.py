@@ -46,6 +46,10 @@ class ConfigFile(object):
         Automatically reloads the config file.
 
         This is just an alias for self.load()."""
+
+        if not self.fd.closed: self.fd.close()
+
+        self.fd = open(self.fd.name, 'r')
         self.load()
 
     def initial_populate(self, data):
