@@ -1,6 +1,13 @@
 import os
+try:
+    import requests
+    __network = True
+except ImportError:
+    __network = False
+    raise ImportWarning("Cannot use networked config support. Install requests to enable it.")
 
 from configmaster import ConfigKey
+from configmaster import exc
 
 class ConfigObject(object):
     """
@@ -39,7 +46,6 @@ class ConfigFile(ConfigObject):
 
     It automatically provides opening of the file and creating it if it doesn't exist, and provides a basic reload() method to automatically reload the files from disk.
     """
-
     def __init__(self, fd):
         super().__init__()
         self.loaded = False
@@ -90,3 +96,22 @@ class ConfigFile(ConfigObject):
         # Otherwise, create a new ConfigKey.
         self.config = ConfigKey.ConfigKey.parse_data(data)
         return True
+
+class NetworkedConfigObject(ConfigObject):
+    def __init__(self, url: str):
+        super().__init__()
+        self.url = url
+        # Try and get url.
+        try:
+            self.request = requests.get(self.url)
+        except requests.exceptions.ConnectionError as e:
+            raise exc.NetworkedFileException("Failed to download file: {}".format(e))
+
+        if self.request.status_code != 200:
+            raise exc.NetworkedFileException("Failed to download file: Status code responded was {}".format(self.request.status_code))
+
+    def dump(self):
+        raise exc.WriterException("Cannot write to a networked JSON file.")
+
+    def initial_populate(self, data):
+        raise exc.WriterException("Cannot write to a networked JSON file.")

@@ -1,6 +1,6 @@
 import json
 import io
-from configmaster.ConfigFile import ConfigFile
+from configmaster.ConfigFile import ConfigFile, NetworkedConfigObject
 from configmaster import ConfigKey
 from configmaster import exc
 
@@ -70,7 +70,7 @@ class JSONConfigFile(ConfigFile):
         return json.dumps(self.config.dump())
 
 
-class NetworkedJSONConfigFile(ConfigFile):
+class NetworkedJSONConfigFile(NetworkedConfigObject):
     """
     This is a class for a network JSON configuration file.
 
@@ -85,6 +85,7 @@ class NetworkedJSONConfigFile(ConfigFile):
         :param addr: The address to load from.
         :param verify: Should we verify the data to prevent ConfigKey injection?
         """
+        super().__init__(addr)
         def decode_json_object(data):
             d = {}
             # Loop over the items in the dict, to check for methods beginning with __.
@@ -102,52 +103,33 @@ class NetworkedJSONConfigFile(ConfigFile):
             return d
 
         self.hook = decode_json_object
-        self.url = addr
         self.verify = verify
-        self.config = None
 
         self.load()
 
     def load(self):
-        # Try and get url.
-        try:
-            r = requests.get(self.url)
-        except requests.exceptions.ConnectionError as e:
-            raise exc.NetworkedFileException("Failed to download file: {}".format(e))
-
-        if r.status_code != 200:
-            raise exc.NetworkedFileException("Failed to download file: Status code responded was {}".format(r.status_code))
-
         # Try and load file.
         if self.verify is False:
             # Use requests' JSON method.
             try:
-                data = r.json()
+                data = self.request.json()
             except ValueError as e:
                 raise exc.LoaderException("Could not load JSON data: {}".format(e))
         else:
             # Verify the data before it comes in, to prevent overriding of our class attributes and stuff.
             try:
-                data = json.loads(r.text, object_hook=self.hook)
+                data = json.loads(self.request.text, object_hook=self.hook)
             except ValueError as e:
                 raise exc.LoaderException("Could not load JSON data: {}".format(e))
 
         # Load it into a ConfigKey.
-        self.config = ConfigKey.ConfigKey.parse_data(data)
+        self.config.load_from_dict(data)
 
         # Done!
-
-    def dumpd(self):
-        return self.config.dump()
 
     def dumps(self):
         return json.dumps(self.config.dump())
 
-    def dump(self):
-        raise exc.WriterException("Cannot write to a networked JSON file.")
-
-    def initial_populate(self, data):
-        raise exc.WriterException("Cannot write to a networked JSON file.")
 
 if not __networked_json:
     def _(*args, **kwargs):
