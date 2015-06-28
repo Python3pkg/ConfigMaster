@@ -29,6 +29,8 @@ class ConfigFile(object):
             self.path = fd.name.replace('/', '.').replace('\\', '.')
         self.fd = fd
 
+        self.config = None
+
     def dump(self):
         """
         Abstract dump method.
@@ -42,10 +44,7 @@ class ConfigFile(object):
         raise NotImplementedError
 
     def dumpd(self):
-        """
-        Abstract dump to dict method.
-        """
-        raise NotImplementedError
+        return self.config.dump()
 
     def load(self):
         """
