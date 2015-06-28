@@ -35,6 +35,18 @@ class ConfigFile(object):
         """
         raise NotImplementedError
 
+    def dumps(self):
+        """
+        Abstract dump to string method.
+        """
+        raise NotImplementedError
+
+    def dumpd(self):
+        """
+        Abstract dump to dict method.
+        """
+        raise NotImplementedError
+
     def load(self):
         """
         Abstract load method.
