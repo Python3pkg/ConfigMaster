@@ -17,7 +17,7 @@ The recommended format is YAML.
  - ~~Add in networked JSON support~~ *Added in version 1.3.0*
  - Add more docstrings
  - Make proper documentation
- - Add tests
+ - ~~Add tests~~ *Added in version 1.3.1*
 
 ### How to install
 For the latest stable version uploaded to PyPI, use:  
