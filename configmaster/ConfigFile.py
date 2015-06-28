@@ -2,40 +2,17 @@ import os
 
 from configmaster import ConfigKey
 
-class ConfigFile(object):
+class ConfigObject(object):
     """
-    The abstract base class for a ConfigFile object. All config files extend from this.
+    The abstract base class for a Config object.
+
+    All types of config file extend from this.
 
     This provides several methods that don't need to be re-implemented in sub classes.
-    For example, it automatically provides opening of the file and creating it if it doesn't exist, and provides a basic reload() method to automatically reload the files from disk.
     """
 
-    def __init__(self, fd):
-        self.loaded = False
-        # Check if fd is a string
-        if isinstance(fd, str):
-            self.path = fd.replace('/', '.').replace('\\', '.')
-            # Open the file.
-            try:
-                fd = open(fd)
-            except FileNotFoundError:
-                # Make sure the directory exists.
-                if not os.path.exists('/'.join(fd.split('/')[:-1])) and '/' in fd:
-                        os.makedirs('/'.join(fd.split('/')[:-1]))
-                # Open it in write mode, then re-open it.
-                open(fd, 'w').close()
-                fd = open(fd, 'r')
-        else:
-            self.path = fd.name.replace('/', '.').replace('\\', '.')
-        self.fd = fd
-
-        self.config = None
-
-    def dump(self):
-        """
-        Abstract dump method.
-        """
-        raise NotImplementedError
+    def __init__(self):
+        self.config = ConfigKey.ConfigKey()
 
     def dumps(self) -> str:
         """
@@ -54,6 +31,42 @@ class ConfigFile(object):
         Abstract load method.
         """
         raise NotImplementedError
+
+class ConfigFile(ConfigObject):
+    """
+    The abstract base class for a ConfigFile object. All config files extend from this.
+
+
+    It automatically provides opening of the file and creating it if it doesn't exist, and provides a basic reload() method to automatically reload the files from disk.
+    """
+
+    def __init__(self, fd):
+        super().__init__()
+        self.loaded = False
+        # Check if fd is a string
+        if isinstance(fd, str):
+            self.path = fd.replace('/', '.').replace('\\', '.')
+            # Open the file.
+            try:
+                fd = open(fd)
+            except FileNotFoundError:
+                # Make sure the directory exists.
+                if not os.path.exists('/'.join(fd.split('/')[:-1])) and '/' in fd:
+                        os.makedirs('/'.join(fd.split('/')[:-1]))
+                # Open it in write mode, then re-open it.
+                open(fd, 'w').close()
+                fd = open(fd, 'r')
+        else:
+            self.path = fd.name.replace('/', '.').replace('\\', '.')
+        self.fd = fd
+
+
+    def dump(self):
+        """
+        Abstract dump method.
+        """
+        raise NotImplementedError
+
 
     def reload(self):
         """
