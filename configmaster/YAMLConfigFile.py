@@ -110,4 +110,4 @@ class YAMLConfigFile(ConfigFile):
 
 
     def dumps(self):
-        return yaml.dump(self.config.dump())
+        return yaml.dump(self.config.dump(), default_flow_style=False)
