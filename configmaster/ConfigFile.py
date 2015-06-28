@@ -37,13 +37,16 @@ class ConfigFile(object):
         """
         raise NotImplementedError
 
-    def dumps(self):
+    def dumps(self) -> str:
         """
         Abstract dump to string method.
         """
         raise NotImplementedError
 
-    def dumpd(self):
+    def dumpd(self) -> dict:
+        """
+        Dump config data to a dictionary.
+        """
         return self.config.dump()
 
     def load(self):
