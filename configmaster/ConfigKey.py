@@ -44,6 +44,15 @@ class ConfigKey(object):
                 d[item] = self.__dict__[item]
         return d
 
+    def items(self):
+        return self.__dict__.items()
+
+    def keys(self):
+        return self.__dict__.keys()
+
+    def values(self):
+        return self.__dict__.values()
+
     @classmethod
     def iter_list(cls, data: list):
         l = []
@@ -56,7 +65,6 @@ class ConfigKey(object):
             else:
                 l.append(item)
         return l
-
 
     @classmethod
     def parse_data(cls, data: dict):
