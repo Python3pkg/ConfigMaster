@@ -61,7 +61,6 @@ class YAMLConfigFile(ConfigFile):
         """
         super().__init__(fd)
         self.safe_load = safe_load
-        self.config = None
 
         self.load()
 
@@ -93,7 +92,7 @@ class YAMLConfigFile(ConfigFile):
         except yaml.scanner.ScannerError:
             raise exc.LoaderException("Selected file had invalid YAML tokens.")
         # Serialize the data into new sets of ConfigKey classes.
-        self.config = ConfigKey.ConfigKey.parse_data(data)
+        self.config.load_from_dict(data)
 
 
     def dump(self):
