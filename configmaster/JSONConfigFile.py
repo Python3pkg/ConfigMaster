@@ -18,9 +18,9 @@ class JSONConfigFile(ConfigFile):
     This handles automatically opening/creating the JSON configuration files.
 
     >>> import configmaster.JSONConfigFile
-    >>> cfg = configmaster.JSONConfigFile.JSONConfigFile("test.yml") # Accepts a string for input
+    >>> cfg = configmaster.JSONConfigFile.JSONConfigFile("test.json") # Accepts a string for input
 
-    >>> fd = open("test.yml") # Accepts a file descriptor too
+    >>> fd = open("test.json") # Accepts a file descriptor too
     >>> cfg2 = configmaster.JSONConfigFile.JSONConfigFile(fd)
 
     ConfigMaster objects accepts either a string for the relative path of the YAML file to load, or a :io.TextIOBase: object to read from.
@@ -45,7 +45,6 @@ class JSONConfigFile(ConfigFile):
 
         self.load()
 
-
     def load(self):
         # Load the data from the JSON file.
         try:
@@ -54,7 +53,6 @@ class JSONConfigFile(ConfigFile):
             raise exc.LoaderException("Could not decode JSON file: {}".format(e))
         # Serialize the data into new sets of ConfigKey classes.
         self.config = ConfigKey.ConfigKey.parse_data(data)
-
 
     def dump(self):
         """
@@ -69,18 +67,11 @@ class JSONConfigFile(ConfigFile):
         json.dump(data, self.fd)
         self.reload()
 
-    def initial_populate(self, data):
-        """
-        Repopulate the ConfigMaster object with data.
-        :param data: The data to populate.
-        :return: If it was populated.
-        """
-        if self.config.parsed:
-            return False
-        # Otherwise, create a new ConfigKey.
-        self.config = ConfigKey.ConfigKey.parse_data(data)
-        return True
+    def dumpd(self):
+        return self.config.dump()
 
+    def dumps(self):
+        return json.dumps(self.config.dump())
 
 
 class NetworkedJSONConfigFile(ConfigFile):
@@ -88,15 +79,23 @@ class NetworkedJSONConfigFile(ConfigFile):
     This is a class for a network JSON configuration file.
 
     Networked JSON files are very similar to regular JSON config files, except they don't support dumping to a file.
+
+    By default, files are verified to prevent things like
+
+    This module requires requests to download the file.
     """
     def __init__(self, addr: str, verify=True):
+        """
+        :param addr: The address to load from.
+        :param verify: Should we verify the data to prevent ConfigKey injection?
+        """
         def decode_json_object(data):
             d = {}
             # Loop over the items in the dict, to check for methods beginning with __.
             for key, value in data.items():
-                if key.startswith("__"):
+                if key.startswith("__") or key in ['dump', 'items', 'keys', 'values', 'iter_list', 'parse_data']:
                     # Sigh...
-                    newname = 'unsafe' + key
+                    newname = 'unsafe_' + key
                 else:
                     newname = key
                 if isinstance(value, dict):
@@ -110,6 +109,8 @@ class NetworkedJSONConfigFile(ConfigFile):
         self.url = addr
         self.verify = verify
         self.config = None
+
+        self.load()
 
     def load(self):
         # Try and get url.
@@ -140,8 +141,16 @@ class NetworkedJSONConfigFile(ConfigFile):
 
         # Done!
 
+    def dumpd(self):
+        return self.config.dump()
+
+    def dumps(self):
+        return json.dumps(self.config.dump())
 
     def dump(self):
+        raise exc.WriterException("Cannot write to a networked JSON file.")
+
+    def initial_populate(self, data):
         raise exc.WriterException("Cannot write to a networked JSON file.")
 
 if not __networked_json:
