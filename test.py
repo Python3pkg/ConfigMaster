@@ -74,7 +74,7 @@ def test_invalid_key_get():
 
 def test_configkey_dump():
     cfg = YAMLConfigFile("test_data/test.yml")
-    assert cfg.config.dump() == {"hello": "goodbye", "waz": 1, "wsx": 0, "edc": {"op": 4, "po": 6},
+    assert cfg.config.dump() == {"hello": "goodbye", "qaz": 1, "wsx": 2, "edc": {"op": 4, "po": 6},
                                         "fruit": ["apples", "oranges", "bananas"],
                                         "houses": [{"red": False, "blue": True}, {"red": True, "blue": False}]}
 

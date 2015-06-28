@@ -40,9 +40,12 @@ class ConfigKey(object):
                 continue
             if isinstance(self.__dict__[item], ConfigKey):
                 d[item] = self.__dict__[item].dump()
+            elif isinstance(self.__dict__[item], list):
+                d[item] = ConfigKey.iter_list_dump(self.__dict__[item])
             else:
                 d[item] = self.__dict__[item]
         return d
+
 
     def items(self):
         return self.__dict__.items()
@@ -62,6 +65,18 @@ class ConfigKey(object):
             elif isinstance(item, dict):
                 ncfg = ConfigKey.parse_data(item)
                 l.append(ncfg)
+            else:
+                l.append(item)
+        return l
+
+    @classmethod
+    def iter_list_dump(cls, data: list):
+        l = []
+        for item in data:
+            if isinstance(item, list):
+                l.append(cls.iter_list_dump(item))
+            elif isinstance(item, ConfigKey):
+                l.append(item.dump())
             else:
                 l.append(item)
         return l
