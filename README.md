@@ -12,7 +12,7 @@ The recommended format is YAML.
 
 ### TODO
  - Add in support for python ConfigParser formats
- - <del>Add in networked JSON support</del> *Added in version 1.3.0*
+ - ~~Add in networked JSON support~~ *Added in version 1.3.0*
  - Add more docstrings
  - Make proper documentation
  - Add tests
