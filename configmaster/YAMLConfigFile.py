@@ -108,3 +108,6 @@ class YAMLConfigFile(ConfigFile):
         yaml.dump(data, self.fd, Dumper=self.dumper, default_flow_style=False)
         self.reload()
 
+
+    def dumps(self):
+        return yaml.dump(self.config.dump())

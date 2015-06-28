@@ -19,9 +19,22 @@ TODO
 ~~~~
 
 -  Add in support for python ConfigParser formats
--  Add in networked JSON support
+-  
+
+   .. raw:: html
+
+      <del>
+
+   Add in networked JSON support
+
+   .. raw:: html
+
+      </del>
+
+   *Added in version 1.3.0*
 -  Add more docstrings
 -  Make proper documentation
+-  Add tests
 
 How to install
 ~~~~~~~~~~~~~~

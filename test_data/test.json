@@ -1,0 +1,8 @@
+{
+  "hello": "goodbye",
+  "waz": 1,
+  "wsx": 0,
+  "edc": {"op": 4, "po": 6},
+  "fruit": ["apples", "oranges", "bananas"],
+  "houses": [{"red": false, "blue": true}, {"red": true, "blue": false}]
+}

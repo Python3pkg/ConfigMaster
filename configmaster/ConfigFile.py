@@ -29,11 +29,25 @@ class ConfigFile(object):
             self.path = fd.name.replace('/', '.').replace('\\', '.')
         self.fd = fd
 
+        self.config = None
+
     def dump(self):
         """
         Abstract dump method.
         """
         raise NotImplementedError
+
+    def dumps(self) -> str:
+        """
+        Abstract dump to string method.
+        """
+        raise NotImplementedError
+
+    def dumpd(self) -> dict:
+        """
+        Dump config data to a dictionary.
+        """
+        return self.config.dump()
 
     def load(self):
         """
