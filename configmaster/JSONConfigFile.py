@@ -4,6 +4,12 @@ from configmaster.ConfigFile import ConfigFile
 from configmaster import ConfigKey
 from configmaster import exc
 
+try:
+    import requests
+    __networked_json = True
+except ImportError:
+    __networked_json = False
+    raise ImportWarning("Cannot use networked JSON support. Install requests to enable it.")
 
 class JSONConfigFile(ConfigFile):
     """
@@ -44,7 +50,7 @@ class JSONConfigFile(ConfigFile):
         # Load the data from the JSON file.
         try:
             data = json.load(self.fd, object_hook=self.decoder)
-        except json.JSONDecodeError as e:
+        except ValueError as e:
             raise exc.LoaderException("Could not decode JSON file: {}".format(e))
         # Serialize the data into new sets of ConfigKey classes.
         self.config = ConfigKey.ConfigKey.parse_data(data)
@@ -74,3 +80,72 @@ class JSONConfigFile(ConfigFile):
         # Otherwise, create a new ConfigKey.
         self.config = ConfigKey.ConfigKey.parse_data(data)
         return True
+
+
+
+class NetworkedJSONConfigFile(ConfigFile):
+    """
+    This is a class for a network JSON configuration file.
+
+    Networked JSON files are very similar to regular JSON config files, except they don't support dumping to a file.
+    """
+    def __init__(self, addr: str, verify=True):
+        def decode_json_object(data):
+            d = {}
+            # Loop over the items in the dict, to check for methods beginning with __.
+            for key, value in data.items():
+                if key.startswith("__"):
+                    # Sigh...
+                    newname = 'unsafe' + key
+                else:
+                    newname = key
+                if isinstance(value, dict):
+                    # Merge the dicts.
+                    d[newname] = decode_json_object(value)
+                else:
+                    d[newname] = value
+            return d
+
+        self.hook = decode_json_object
+        self.url = addr
+        self.verify = verify
+        self.config = None
+
+    def load(self):
+        # Try and get url.
+        try:
+            r = requests.get(self.url)
+        except requests.exceptions.ConnectionError as e:
+            raise exc.NetworkedFileException("Failed to download file: {}".format(e))
+
+        if r.status_code != 200:
+            raise exc.NetworkedFileException("Failed to download file: Status code responded was {}".format(r.status_code))
+
+        # Try and load file.
+        if self.verify is False:
+            # Use requests' JSON method.
+            try:
+                data = r.json()
+            except ValueError as e:
+                raise exc.LoaderException("Could not load JSON data: {}".format(e))
+        else:
+            # Verify the data before it comes in, to prevent overriding of our class attributes and stuff.
+            try:
+                data = json.loads(r.text, object_hook=self.hook)
+            except ValueError as e:
+                raise exc.LoaderException("Could not load JSON data: {}".format(e))
+
+        # Load it into a ConfigKey.
+        self.config = ConfigKey.ConfigKey.parse_data(data)
+
+        # Done!
+
+
+    def dump(self):
+        raise exc.WriterException("Cannot write to a networked JSON file.")
+
+if not __networked_json:
+    def _(*args, **kwargs):
+        raise exc.FiletypeNotSupportedException("Networked JSON support is disabled.")
+
+    NetworkedJSONConfigFile = _
