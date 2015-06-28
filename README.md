@@ -1,6 +1,8 @@
 ConfigMaster
 ------------
 
+[![Build Status](https://drone.io/bitbucket.org/SunDwarf/configmaster/status.png)](https://drone.io/bitbucket.org/SunDwarf/configmaster/latest)
+
 ## What is ConfigMaster?  
 ConfigMaster is a simple library for accessing config files programmatically. No longer will you have to mess with list lookups and dict lookups when you wish to load a config file.  
 Instead, objects in the file are accessed as simple class attributes.  

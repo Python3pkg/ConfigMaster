@@ -1,6 +1,8 @@
 ConfigMaster
 ------------
 
+|Build Status|
+
 What is ConfigMaster?
 ---------------------
 
@@ -19,19 +21,7 @@ TODO
 ~~~~
 
 -  Add in support for python ConfigParser formats
--  
-
-   .. raw:: html
-
-      <del>
-
-   Add in networked JSON support
-
-   .. raw:: html
-
-      </del>
-
-   *Added in version 1.3.0*
+-  [STRIKEOUT:Add in networked JSON support] *Added in version 1.3.0*
 -  Add more docstrings
 -  Make proper documentation
 -  Add tests
@@ -95,3 +85,6 @@ Need to get the raw dict form of a ConfigKey? Use .dump() on that!
     {"a": 1, "b": [1, 2], "c": {"d": 3}
     >>> cfg.config.c.dump()
     {"d": 3}
+
+.. |Build Status| image:: https://drone.io/bitbucket.org/SunDwarf/configmaster/status.png
+   :target: https://drone.io/bitbucket.org/SunDwarf/configmaster/latest
