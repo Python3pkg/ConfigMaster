@@ -38,7 +38,6 @@ class JSONConfigFile(ConfigFile):
                 Either a string or a :io.TextIOBase: object.
         """
         super().__init__(fd)
-        self.config = None
 
         # A custom object decoder hook.
         self.decoder = obj_decoder
@@ -52,7 +51,7 @@ class JSONConfigFile(ConfigFile):
         except ValueError as e:
             raise exc.LoaderException("Could not decode JSON file: {}".format(e))
         # Serialize the data into new sets of ConfigKey classes.
-        self.config = ConfigKey.ConfigKey.parse_data(data)
+        self.config.load_from_dict(data)
 
     def dump(self):
         """
@@ -66,9 +65,6 @@ class JSONConfigFile(ConfigFile):
 
         json.dump(data, self.fd)
         self.reload()
-
-    def dumpd(self):
-        return self.config.dump()
 
     def dumps(self):
         return json.dumps(self.config.dump())
