@@ -15,9 +15,6 @@ class ConfigKey(object):
     There are special cases for handling lists, and all objects inside a list are automatically parsed appropriately, with dicts turning into ConfigKeys.
     """
     def __init__(self):
-        """
-        You should not be creating a new ConfigKey instance yourself. Use parse_data instead.
-        """
         self.parsed = False
 
     def __iter__(self):
@@ -41,7 +38,7 @@ class ConfigKey(object):
             if isinstance(self.__dict__[item], ConfigKey):
                 d[item] = self.__dict__[item].dump()
             elif isinstance(self.__dict__[item], list):
-                d[item] = ConfigKey.iter_list_dump(self.__dict__[item])
+                d[item] = self.iter_list_dump(self.__dict__[item])
             else:
                 d[item] = self.__dict__[item]
         return d
@@ -56,25 +53,46 @@ class ConfigKey(object):
     def values(self):
         return self.__dict__.values()
 
-    @classmethod
-    def iter_list(cls, data: list):
+    def load_from_dict(self, data: dict):
+        if data is None:
+            return False
+        for key, item in data.items():
+            if isinstance(item, dict):
+                # Create a new ConfigKey object with the dict.
+                ncfg = ConfigKey()
+                # Parse the data.
+                ncfg.load_from_dict(item)
+                # Set our new ConfigKey as an attribute of ourselves.
+                setattr(self, key, ncfg)
+            elif isinstance(item, list):
+                # Iterate over the list, creating ConfigKey items as appropriate.
+                nlst = self.iter_list(item)
+                # Set our new list as an attribute of ourselves.
+                setattr(self, key, nlst)
+            else:
+                # Set the item as an attribute of ourselves.
+                setattr(self, key, item)
+        # Flip the parsed flag,
+        self.parsed = True
+
+    def iter_list(self, data: list):
         l = []
         for item in data:
             if isinstance(item, list):
-                l.append(cls.iter_list(item))
+                l.append(self.iter_list(item))
             elif isinstance(item, dict):
-                ncfg = ConfigKey.parse_data(item)
+                ncfg = ConfigKey()
+                ncfg.load_from_dict(item)
                 l.append(ncfg)
             else:
                 l.append(item)
         return l
 
-    @classmethod
-    def iter_list_dump(cls, data: list):
+    def iter_list_dump(self, data: list):
         l = []
         for item in data:
             if isinstance(item, list):
-                l.append(cls.iter_list_dump(item))
+                l.append(self.iter_list_dump(item))
             elif isinstance(item, ConfigKey):
                 l.append(item.dump())
             else:
