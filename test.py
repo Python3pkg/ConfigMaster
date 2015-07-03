@@ -130,21 +130,22 @@ else:
         else:
             __site_up = True
 
+
 # Test network JSON stuff.
-@pytest.mark.skipif(not __has_requests, reason="Requests must be installed to use Networked JSON tests.")
 @pytest.mark.skipif(not __site_up, reason="JSONTest site is not up - cannot perform tests currently.")
+@pytest.mark.skipif(not __has_requests, reason="Requests must be installed to use Networked JSON tests.")
 def test_network_json_get_url():
     cfg = NetworkedJSONConfigFile("http://echo.jsontest.com/k/v")
     assert cfg.config.k == "v"
 
-@pytest.mark.skipif(not __has_requests, reason="Requests must be installed to use Networked JSON tests.")
 @pytest.mark.skipif(not __site_up, reason="JSONTest site is not up - cannot perform tests currently.")
+@pytest.mark.skipif(not __has_requests, reason="Requests must be installed to use Networked JSON tests.")
 @pytest.mark.xfail
 def test_network_json_get_bad_url():
     cfg = NetworkedJSONConfigFile("http://abc.def")
 
-@pytest.mark.skipif(not __has_requests, reason="Requests must be installed to use Networked JSON tests.")
 @pytest.mark.skipif(not __site_up, reason="JSONTest site is not up - cannot perform tests currently.")
+@pytest.mark.skipif(not __has_requests, reason="Requests must be installed to use Networked JSON tests.")
 def test_network_json_get_unsafe_data():
     cfg = NetworkedJSONConfigFile("http://echo.jsontest.com/__dict__/v/dump/lol", verify=True)
     assert hasattr(cfg.config, "unsafe___dict__")
@@ -152,30 +153,30 @@ def test_network_json_get_unsafe_data():
     assert hasattr(cfg.config, "unsafe_dump")
     assert cfg.config.unsafe_dump == "lol"
 
-@pytest.mark.skipif(not __has_requests, reason="Requests must be installed to use Networked JSON tests.")
 @pytest.mark.skipif(not __site_up, reason="JSONTest site is not up - cannot perform tests currently.")
+@pytest.mark.skipif(not __has_requests, reason="Requests must be installed to use Networked JSON tests.")
 @pytest.mark.xfail
 def test_network_json_get_unsafe_data_no_verification():
     cfg = NetworkedJSONConfigFile("http://echo.jsontest.com/dump/lol", verify=False)
     assert hasattr(cfg.config, "dump")
     cfg.config.dump()
 
-@pytest.mark.skipif(not __has_requests, reason="Requests must be installed to use Networked JSON tests.")
 @pytest.mark.skipif(not __site_up, reason="JSONTest site is not up - cannot perform tests currently.")
+@pytest.mark.skipif(not __has_requests, reason="Requests must be installed to use Networked JSON tests.")
 @pytest.mark.xfail(raises=exc.WriterException)
 def test_network_json_dump():
     cfg = NetworkedJSONConfigFile("http://echo.jsontest.com/k/v")
     cfg.dump()
 
-@pytest.mark.skipif(not __has_requests, reason="Requests must be installed to use Networked JSON tests.")
 @pytest.mark.skipif(not __site_up, reason="JSONTest site is not up - cannot perform tests currently.")
+@pytest.mark.skipif(not __has_requests, reason="Requests must be installed to use Networked JSON tests.")
 @pytest.mark.xfail(raises=exc.WriterException)
 def test_network_json_populate():
     cfg = NetworkedJSONConfigFile("http://echo.jsontest.com/k/v")
     cfg.initial_populate({})
 
-@pytest.mark.skipif(not __has_requests, reason="Requests must be installed to use Networked JSON tests.")
 @pytest.mark.skipif(not __site_up, reason="JSONTest site is not up - cannot perform tests currently.")
+@pytest.mark.skipif(not __has_requests, reason="Requests must be installed to use Networked JSON tests.")
 @pytest.mark.xfail(raises=exc.LoaderException)
 def test_network_json_bad_data():
     cfg = NetworkedJSONConfigFile("http://google.com/robots.txt")
