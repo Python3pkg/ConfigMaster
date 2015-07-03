@@ -11,6 +11,8 @@ except ImportError:
 from configmaster.ConfigKey import ConfigKey
 
 from configmaster.JSONConfigFile import JSONConfigFile
+
+from configmaster.INIConfigFile import INIConfigFile
 try:
     from configmaster.YAMLConfigFile import YAMLConfigFile
     __has_yaml = True
@@ -20,7 +22,6 @@ except exc.FiletypeNotSupportedException:
 from configmaster.JSONConfigFile import NetworkedJSONConfigFile
 
 from configmaster import exc
-
 
 def test_loading_valid_json():
     cfg = JSONConfigFile("test_data/test.json")
@@ -32,6 +33,11 @@ def test_loading_valid_yml():
     cfg = YAMLConfigFile("test_data/test.yml")
     assert isinstance(cfg.config, ConfigKey)
     assert cfg.config.parsed
+
+def test_loading_valid_ini():
+    cfg = INIConfigFile("test_data/test.ini")
+    assert 'bitbucket_org' in cfg.config
+    assert cfg.config.bitbucket_org.user == "hg"
 
 def test_created_config_file():
     if os.path.exists("test_data/bleh.json"):
