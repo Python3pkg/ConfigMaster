@@ -37,12 +37,10 @@ class JSONConfigFile(ConfigFile):
         :param fd: The file to load.
                 Either a string or a :io.TextIOBase: object.
         """
-        super().__init__(fd, safe_load, json_fix=True)
-
         # A custom object decoder hook.
         self.decoder = obj_decoder
+        super().__init__(fd, safe_load, json_fix=True)
 
-        self.load()
 
     def load(self):
         # Load the data from the JSON file.
