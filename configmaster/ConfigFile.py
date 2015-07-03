@@ -18,8 +18,8 @@ class ConfigObject(object):
     This provides several methods that don't need to be re-implemented in sub classes.
     """
 
-    def __init__(self):
-        self.config = ConfigKey.ConfigKey()
+    def __init__(self, safe_load: bool=True):
+        self.config = ConfigKey.ConfigKey(safe_load)
 
     def dumps(self) -> str:
         """
@@ -46,9 +46,8 @@ class ConfigFile(ConfigObject):
 
     It automatically provides opening of the file and creating it if it doesn't exist, and provides a basic reload() method to automatically reload the files from disk.
     """
-    def __init__(self, fd):
-        super().__init__()
-        self.loaded = False
+    def __init__(self, fd, safe_load: bool=True, json_fix: bool=False):
+        super().__init__(safe_load)
         # Check if fd is a string
         if isinstance(fd, str):
             self.path = fd.replace('/', '.').replace('\\', '.')
@@ -59,13 +58,16 @@ class ConfigFile(ConfigObject):
                 # Make sure the directory exists.
                 if not os.path.exists('/'.join(fd.split('/')[:-1])) and '/' in fd:
                         os.makedirs('/'.join(fd.split('/')[:-1]))
-                # Open it in write mode, then re-open it.
-                open(fd, 'w').close()
+                if not json_fix:
+                    # Open it in write mode, and close it.
+                    open(fd, 'w').close()
+                else:
+                    # Open it in write mode, write "{}" to it, and close it.
+                    with open(fd, 'w') as f: f.write("{}")
                 fd = open(fd, 'r')
         else:
             self.path = fd.name.replace('/', '.').replace('\\', '.')
         self.fd = fd
-
 
     def dump(self):
         """
@@ -94,12 +96,12 @@ class ConfigFile(ConfigObject):
         if self.config.parsed:
             return False
         # Otherwise, create a new ConfigKey.
-        self.config = ConfigKey.ConfigKey.parse_data(data)
+        self.config.load_from_dict(data)
         return True
 
 class NetworkedConfigObject(ConfigObject):
-    def __init__(self, url: str):
-        super().__init__()
+    def __init__(self, url: str, safe_load: bool=True):
+        super().__init__(safe_load=safe_load)
         self.url = url
         # Try and get url.
         try:
