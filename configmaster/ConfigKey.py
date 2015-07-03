@@ -6,7 +6,8 @@ class ConfigKey(object):
     A ConfigKey object is a collection that is stored via class attributes.
 
     >>> d = {"a": 2, "b": [1, 2, {"c": 3}], {"d": 4}}
-    >>> config = ConfigKey.parse_data(d)
+    >>> config = ConfigKey.ConfigKey()
+    >>> config.load_from_dict(d)
     >>> config.a # Returns 2
     >>> config.b[1] # Returns 2
     >>> config.b[3] # Returns a new ConfigKey, as it's a dict.
@@ -14,8 +15,9 @@ class ConfigKey(object):
     ConfigKeys take in data from dicts, and set attributes of themselves to accommodate the items inside the dictionaries.
     There are special cases for handling lists, and all objects inside a list are automatically parsed appropriately, with dicts turning into ConfigKeys.
     """
-    def __init__(self):
+    def __init__(self, safe_load: bool=True):
         self.parsed = False
+        self.safe_load = safe_load
 
     def __iter__(self):
         ndict = copy.copy(self.__dict__)
@@ -56,7 +58,16 @@ class ConfigKey(object):
     def load_from_dict(self, data: dict):
         if data is None:
             return False
+        # Loop over items
         for key, item in data.items():
+            assert isinstance(key, str)
+            # Check name to verify it's safe.
+            if self.safe_load:
+                if key.startswith("__") or key in ['dump', 'items', 'keys', 'values',
+                                                   'iter_list', 'load_from_dict', 'iter_list_dump',
+                                                   'parsed', 'safe_load']:
+                    # It's evil!
+                    key = "unsafe_" + key
             if isinstance(item, dict):
                 # Create a new ConfigKey object with the dict.
                 ncfg = ConfigKey()
@@ -98,32 +109,3 @@ class ConfigKey(object):
             else:
                 l.append(item)
         return l
-
-    @classmethod
-    def parse_data(cls, data: dict):
-        """
-        Create a Config Key entity.
-        :param data: The dict to create the entity from.
-        :return: A new ConfigKey object.
-        """
-        cfg = ConfigKey()
-        if data is None:
-            return cfg
-        for key, item in data.items():
-            if isinstance(item, dict):
-                # Create a new ConfigKey object with the dict.
-                ncfg = ConfigKey.parse_data(item)
-                # Set our new ConfigKey as an attribute of ourselves.
-                setattr(cfg, key, ncfg)
-            elif isinstance(item, list):
-                # Iterate over the list, creating ConfigKey items as appropriate.
-                nlst = ConfigKey.iter_list(item)
-                # Set our new list as an attribute of ourselves.
-                setattr(cfg, key, nlst)
-            else:
-                # Set the item as an attribute of ourselves.
-                setattr(cfg, key, item)
-        # Flip the parsed flag,
-        cfg.parsed = True
-        return cfg
-
