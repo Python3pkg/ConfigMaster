@@ -14,6 +14,9 @@ class ConfigKey(object):
 
     ConfigKeys take in data from dicts, and set attributes of themselves to accommodate the items inside the dictionaries.
     There are special cases for handling lists, and all objects inside a list are automatically parsed appropriately, with dicts turning into ConfigKeys.
+
+    If the item begins with "__" OR is in the list of the ConfigKey keywords, it has the "unsafe_" prefix added to it, unless safe_load is False.
+    If the item has a '.' in it, it is replaced with a '_'
     """
     def __init__(self, safe_load: bool=True):
         self.parsed = False
@@ -78,6 +81,9 @@ class ConfigKey(object):
                                                    'parsed', 'safe_load']:
                     # It's evil!
                     key = "unsafe_" + key
+            if '.' in key:
+                # Doubly evil!
+                key = key.replace('.', '_')
             if isinstance(item, dict):
                 # Create a new ConfigKey object with the dict.
                 ncfg = ConfigKey()
