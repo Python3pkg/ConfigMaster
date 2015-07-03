@@ -60,9 +60,6 @@ class YAMLConfigFile(ConfigFile):
         :param safe_load: Should we safe_load or not?
         """
         super().__init__(fd, safe_load=safe_load)
-        self.safe_load = safe_load
-
-        self.load()
 
     def load(self):
         # Should we safe load the file using YAML's Safe loader?
