@@ -13,7 +13,7 @@ ConfigMaster natively supports JSON and YAML formats.
 The recommended format is YAML.  
 
 ### TODO
- - Add in support for python ConfigParser formats
+ - ~~Add in support for python ConfigParser formats~~ *Added in version 1.4.0*
  - ~~Add in networked JSON support~~ *Added in version 1.3.0*
  - Add more docstrings
  - Make proper documentation

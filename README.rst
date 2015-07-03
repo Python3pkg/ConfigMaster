@@ -20,11 +20,12 @@ What is supported
 TODO
 ~~~~
 
--  Add in support for python ConfigParser formats
+-  [STRIKEOUT:Add in support for python ConfigParser formats] *Added in
+   version 1.4.0*
 -  [STRIKEOUT:Add in networked JSON support] *Added in version 1.3.0*
 -  Add more docstrings
 -  Make proper documentation
--  Add tests
+-  [STRIKEOUT:Add tests] *Added in version 1.3.1*
 
 How to install
 ~~~~~~~~~~~~~~
