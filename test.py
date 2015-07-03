@@ -1,12 +1,22 @@
 import os
 import pytest
+try:
+    import requests
+    __has_requests = True
+except ImportError:
+    __has_requests = False
 
 # Import our modules.
 
 from configmaster.ConfigKey import ConfigKey
 
 from configmaster.JSONConfigFile import JSONConfigFile
-from configmaster.YAMLConfigFile import YAMLConfigFile
+try:
+    from configmaster.YAMLConfigFile import YAMLConfigFile
+    __has_yaml = True
+except exc.FiletypeNotSupportedException:
+    __has_yaml = False
+
 from configmaster.JSONConfigFile import NetworkedJSONConfigFile
 
 from configmaster import exc
@@ -17,6 +27,7 @@ def test_loading_valid_json():
     assert isinstance(cfg.config, ConfigKey)
     assert cfg.config.parsed
 
+@pytest.mark.skipif(not __has_yaml, reason="Requires PyYAML to be installed.")
 def test_loading_valid_yml():
     cfg = YAMLConfigFile("test_data/test.yml")
     assert isinstance(cfg.config, ConfigKey)
@@ -105,16 +116,35 @@ def test_configkey_iter():
     cfg = JSONConfigFile("test_data/test.json")
     assert set(x for x in cfg.config) == {"hello", "qaz", "wsx", "edc", "fruit", "houses"}
 
-"""
+
+if not __has_requests:
+    __site_up = False
+else:
+    try:
+        r = requests.get("http://echo.jsontest.com/k/v")
+    except Exception:
+        __site_up = False
+    else:
+        if r.status_code != 200:
+            __site_up = False
+        else:
+            __site_up = True
+
 # Test network JSON stuff.
+@pytest.mark.skipif(not __has_requests, reason="Requests must be installed to use Networked JSON tests.")
+@pytest.mark.skipif(not __site_up, reason="JSONTest site is not up - cannot perform tests currently.")
 def test_network_json_get_url():
     cfg = NetworkedJSONConfigFile("http://echo.jsontest.com/k/v")
     assert cfg.config.k == "v"
 
+@pytest.mark.skipif(not __has_requests, reason="Requests must be installed to use Networked JSON tests.")
+@pytest.mark.skipif(not __site_up, reason="JSONTest site is not up - cannot perform tests currently.")
 @pytest.mark.xfail
 def test_network_json_get_bad_url():
     cfg = NetworkedJSONConfigFile("http://abc.def")
 
+@pytest.mark.skipif(not __has_requests, reason="Requests must be installed to use Networked JSON tests.")
+@pytest.mark.skipif(not __site_up, reason="JSONTest site is not up - cannot perform tests currently.")
 def test_network_json_get_unsafe_data():
     cfg = NetworkedJSONConfigFile("http://echo.jsontest.com/__dict__/v/dump/lol", verify=True)
     assert hasattr(cfg.config, "unsafe___dict__")
@@ -122,25 +152,32 @@ def test_network_json_get_unsafe_data():
     assert hasattr(cfg.config, "unsafe_dump")
     assert cfg.config.unsafe_dump == "lol"
 
+@pytest.mark.skipif(not __has_requests, reason="Requests must be installed to use Networked JSON tests.")
+@pytest.mark.skipif(not __site_up, reason="JSONTest site is not up - cannot perform tests currently.")
 @pytest.mark.xfail
 def test_network_json_get_unsafe_data_no_verification():
     cfg = NetworkedJSONConfigFile("http://echo.jsontest.com/dump/lol", verify=False)
     assert hasattr(cfg.config, "dump")
     cfg.config.dump()
 
+@pytest.mark.skipif(not __has_requests, reason="Requests must be installed to use Networked JSON tests.")
+@pytest.mark.skipif(not __site_up, reason="JSONTest site is not up - cannot perform tests currently.")
 @pytest.mark.xfail(raises=exc.WriterException)
 def test_network_json_dump():
     cfg = NetworkedJSONConfigFile("http://echo.jsontest.com/k/v")
     cfg.dump()
 
+@pytest.mark.skipif(not __has_requests, reason="Requests must be installed to use Networked JSON tests.")
+@pytest.mark.skipif(not __site_up, reason="JSONTest site is not up - cannot perform tests currently.")
 @pytest.mark.xfail(raises=exc.WriterException)
 def test_network_json_populate():
     cfg = NetworkedJSONConfigFile("http://echo.jsontest.com/k/v")
     cfg.initial_populate({})
 
+@pytest.mark.skipif(not __has_requests, reason="Requests must be installed to use Networked JSON tests.")
+@pytest.mark.skipif(not __site_up, reason="JSONTest site is not up - cannot perform tests currently.")
 @pytest.mark.xfail(raises=exc.LoaderException)
 def test_network_json_bad_data():
     cfg = NetworkedJSONConfigFile("http://google.com/robots.txt")
 
-"""
 
