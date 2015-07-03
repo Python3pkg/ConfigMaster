@@ -32,12 +32,12 @@ class JSONConfigFile(ConfigFile):
     >>> # Sample JSON data is {"abc": [1, 2, 3]}
     ... print(cfg.config.abc) # Prints [1, 2, 3]
     """
-    def __init__(self, fd: io.TextIOBase, obj_decoder: object=None):
+    def __init__(self, fd: io.TextIOBase, safe_load: bool=True, obj_decoder: object=None):
         """
         :param fd: The file to load.
                 Either a string or a :io.TextIOBase: object.
         """
-        super().__init__(fd)
+        super().__init__(fd, safe_load, json_fix=True)
 
         # A custom object decoder hook.
         self.decoder = obj_decoder
@@ -80,45 +80,29 @@ class NetworkedJSONConfigFile(NetworkedConfigObject):
 
     This module requires requests to download the file.
     """
-    def __init__(self, addr: str, verify=True):
+    def __init__(self, addr: str, custom_object_hook=None):
         """
         :param addr: The address to load from.
-        :param verify: Should we verify the data to prevent ConfigKey injection?
+        :param custom_object_hook: The object hook to use, if specified.
         """
         super().__init__(addr)
-        def decode_json_object(data):
-            d = {}
-            # Loop over the items in the dict, to check for methods beginning with __.
-            for key, value in data.items():
-                if key.startswith("__") or key in ['dump', 'items', 'keys', 'values', 'iter_list', 'parse_data']:
-                    # Sigh...
-                    newname = 'unsafe_' + key
-                else:
-                    newname = key
-                if isinstance(value, dict):
-                    # Merge the dicts.
-                    d[newname] = decode_json_object(value)
-                else:
-                    d[newname] = value
-            return d
 
-        self.hook = decode_json_object
-        self.verify = verify
+        self.object_hook = custom_object_hook
 
         self.load()
 
     def load(self):
         # Try and load file.
-        if self.verify is False:
+        if self.object_hook is None:
             # Use requests' JSON method.
             try:
                 data = self.request.json()
             except ValueError as e:
                 raise exc.LoaderException("Could not load JSON data: {}".format(e))
         else:
-            # Verify the data before it comes in, to prevent overriding of our class attributes and stuff.
+            # Use a custom object hook.
             try:
-                data = json.loads(self.request.text, object_hook=self.hook)
+                data = json.loads(self.request.text, object_hook=self.object_hook)
             except ValueError as e:
                 raise exc.LoaderException("Could not load JSON data: {}".format(e))
 
