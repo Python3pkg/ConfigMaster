@@ -1,7 +1,7 @@
 import json
-import io
+
 from configmaster.ConfigFile import ConfigFile, NetworkedConfigObject
-from configmaster import ConfigKey
+
 from configmaster import exc
 
 try:
