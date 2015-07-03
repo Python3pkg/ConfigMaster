@@ -53,7 +53,7 @@ class YAMLConfigFile(ConfigFile):
     By default, all loads are safe. You can turn this off by passing safe_load as False.
     However, you must remember that these can construct **ANY ARBITRARY PYTHON OBJECT**. Make sure to verify the data before you unsafe load it.
     """
-    def __init__(self, fd: io.TextIOBase, safe_load: bool=True):
+    def __init__(self, fd: str, safe_load: bool=True):
         """
         :param fd: The file to load.
                 Either a string or a :io.TextIOBase: object.

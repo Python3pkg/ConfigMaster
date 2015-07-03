@@ -32,7 +32,7 @@ class JSONConfigFile(ConfigFile):
     >>> # Sample JSON data is {"abc": [1, 2, 3]}
     ... print(cfg.config.abc) # Prints [1, 2, 3]
     """
-    def __init__(self, fd: io.TextIOBase, safe_load: bool=True, obj_decoder: object=None):
+    def __init__(self, fd: str, safe_load: bool=True, obj_decoder: object=None):
         """
         :param fd: The file to load.
                 Either a string or a :io.TextIOBase: object.
