@@ -59,13 +59,13 @@ class YAMLConfigFile(ConfigFile):
                 Either a string or a :io.TextIOBase: object.
         :param safe_load: Should we safe_load or not?
         """
-        super().__init__(fd)
+        super().__init__(fd, safe_load=safe_load)
         self.safe_load = safe_load
 
         self.load()
 
     def load(self):
-        # Should we safe load the file?
+        # Should we safe load the file using YAML's Safe loader?
         # This is always on by default, for security reasons.
         if self.safe_load:
             # Assign 'loader' to the safe YAML CSafeLoader.
