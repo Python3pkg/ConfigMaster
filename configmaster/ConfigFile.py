@@ -46,7 +46,7 @@ class ConfigFile(ConfigObject):
 
     It automatically provides opening of the file and creating it if it doesn't exist, and provides a basic reload() method to automatically reload the files from disk.
     """
-    def __init__(self, fd, safe_load: bool=True, json_fix: bool=False):
+    def __init__(self, fd: str, safe_load: bool=True, json_fix: bool=False):
         super().__init__(safe_load)
         # Check if fd is a string
         if isinstance(fd, str):
