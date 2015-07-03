@@ -22,6 +22,7 @@ class ConfigKey(object):
     def __iter__(self):
         ndict = copy.copy(self.__dict__)
         ndict.pop('parsed')
+        ndict.pop('safe_load')
         return ndict.__iter__()
 
     def __contains__(self, item):
@@ -35,7 +36,7 @@ class ConfigKey(object):
         """
         d = {}
         for item in self.__dict__:
-            if item in ['parsed', 'dump', 'parse_data', 'iter_list']:
+            if item in ['parsed', 'dump', 'parse_data', 'iter_list', 'safe_load']:
                 continue
             if isinstance(self.__dict__[item], ConfigKey):
                 d[item] = self.__dict__[item].dump()
@@ -47,16 +48,25 @@ class ConfigKey(object):
 
 
     def items(self):
-        return self.__dict__.items()
+        ndict = copy.copy(self.__dict__)
+        ndict.pop('parsed')
+        ndict.pop('safe_load')
+        return ndict.items()
 
     def keys(self):
-        return self.__dict__.keys()
+        ndict = copy.copy(self.__dict__)
+        ndict.pop('parsed')
+        ndict.pop('safe_load')
+        return ndict.keys()
 
     def values(self):
-        return self.__dict__.values()
+        ndict = copy.copy(self.__dict__)
+        ndict.pop('parsed')
+        ndict.pop('safe_load')
+        return ndict.values()
 
     def load_from_dict(self, data: dict):
-        if data is None:
+        if data is None or data == {}:
             return False
         # Loop over items
         for key, item in data.items():
