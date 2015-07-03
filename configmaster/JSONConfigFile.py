@@ -23,7 +23,7 @@ class JSONConfigFile(ConfigFile):
     >>> fd = open("test.json") # Accepts a file descriptor too
     >>> cfg2 = configmaster.JSONConfigFile.JSONConfigFile(fd)
 
-    ConfigMaster objects accepts either a string for the relative path of the YAML file to load, or a :io.TextIOBase: object to read from.
+    ConfigMaster objects accepts either a string for the relative path of the INI file to load, or a :io.TextIOBase: object to read from.
     If you pass in a string, the file will automatically be created if it doesn't exist. However, if you do not have permission to write to it, a :PermissionError: will be raised.
 
     To access config objects programmatically, a config object is exposed via the use of cfg.config.
