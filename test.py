@@ -23,59 +23,64 @@ def test_loading_valid_yml():
     assert cfg.config.parsed
 
 def test_created_config_file():
-    if os.path.exists("test_data/bleh.yml"):
-        os.remove("test_data/bleh.yml")
+    if os.path.exists("test_data/bleh.json"):
+        os.remove("test_data/bleh.json")
     try:
-        cfg = YAMLConfigFile("test_data/bleh.yml")
+        cfg = JSONConfigFile("test_data/bleh.json")
         # next line should happen
         parsed = True
     except:
         parsed = False
     assert parsed
     assert not cfg.config.parsed
+    assert os.path.exists("test_data/bleh.json")
 
 def test_initial_populate():
-    cfg = YAMLConfigFile("test_data/bleh.yml")
+    cfg = JSONConfigFile("test_data/bleh.json")
     pop = cfg.initial_populate({"a": 1})
     assert pop
     cfg.dump() and cfg.reload()
     assert cfg.config.a == 1
 
 def test_dumps():
-    cfg = YAMLConfigFile("test_data/bleh.yml")
-    assert cfg.dumps() == "a: 1\n"
+    cfg = JSONConfigFile("test_data/bleh.json")
+    assert cfg.dumps() == "{\"a\": 1}"
 
 def test_dumpd():
-    cfg = YAMLConfigFile("test_data/test.yml")
+    cfg = JSONConfigFile("test_data/test.json")
     assert cfg.dumpd() == {"hello": "goodbye", "qaz": 1, "wsx": 2, "edc": {"op": 4, "po": 6},
                                         "fruit": ["apples", "oranges", "bananas"],
                                         "houses": [{"red": False, "blue": True}, {"red": True, "blue": False}]}
 
 def test_loaded_config_item():
-    cfg = YAMLConfigFile("test_data/test.yml")
+    cfg = JSONConfigFile("test_data/test.json")
     assert cfg.config.hello == "goodbye"
 
 def test_embedded_dict():
-    cfg = YAMLConfigFile("test_data/test.yml")
+    cfg = JSONConfigFile("test_data/test.json")
     assert isinstance(cfg.config.edc, ConfigKey)
     assert cfg.config.edc.op == 4
     assert cfg.config.edc.po == 6
 
 def test_embedded_list():
-    cfg = YAMLConfigFile("test_data/test.yml")
+    cfg = JSONConfigFile("test_data/test.json")
     assert isinstance(cfg.config.fruit, list)
     assert cfg.config.fruit[0] == "apples"
     assert cfg.config.fruit[1] == "oranges"
     assert cfg.config.fruit[2] == "bananas"
 
 def test_embedded_dict_inside_list():
-    cfg = YAMLConfigFile("test_data/test.yml")
+    cfg = JSONConfigFile("test_data/test.json")
     assert isinstance(cfg.config.houses, list)
     assert isinstance(cfg.config.houses[0], ConfigKey)
     assert cfg.config.houses[0].red is False
     assert cfg.config.houses[0].blue is True
     assert cfg.config.houses[1].red is True
     assert cfg.config.houses[1].blue is False
+
+def test_unsafe_load():
+    cfg = JSONConfigFile("test_data/unsafe.json")
+    assert tuple(cfg.config.keys()) == ("unsafe___dict__",)
 
 @pytest.mark.xfail(raises=exc.LoaderException)
 def test_invalid_yaml_data():
@@ -87,19 +92,20 @@ def test_invalid_json_data():
 
 @pytest.mark.xfail(raises=AttributeError)
 def test_invalid_key_get():
-    cfg = YAMLConfigFile("test_data/test.yml")
+    cfg = JSONConfigFile("test_data/test.json")
     assert cfg.config.q == "w"
 
 def test_configkey_dump():
-    cfg = YAMLConfigFile("test_data/test.yml")
+    cfg = JSONConfigFile("test_data/test.json")
     assert cfg.config.dump() == {"hello": "goodbye", "qaz": 1, "wsx": 2, "edc": {"op": 4, "po": 6},
                                         "fruit": ["apples", "oranges", "bananas"],
                                         "houses": [{"red": False, "blue": True}, {"red": True, "blue": False}]}
 
 def test_configkey_iter():
-    cfg = YAMLConfigFile("test_data/test.yml")
+    cfg = JSONConfigFile("test_data/test.json")
     assert set(x for x in cfg.config) == {"hello", "qaz", "wsx", "edc", "fruit", "houses"}
 
+"""
 # Test network JSON stuff.
 def test_network_json_get_url():
     cfg = NetworkedJSONConfigFile("http://echo.jsontest.com/k/v")
@@ -135,4 +141,6 @@ def test_network_json_populate():
 @pytest.mark.xfail(raises=exc.LoaderException)
 def test_network_json_bad_data():
     cfg = NetworkedJSONConfigFile("http://google.com/robots.txt")
+
+"""
 
