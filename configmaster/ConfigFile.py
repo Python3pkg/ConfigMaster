@@ -19,6 +19,7 @@ class ConfigObject(object):
     """
 
     def __init__(self, safe_load: bool=True):
+        self.safe_load = safe_load
         self.config = ConfigKey.ConfigKey(safe_load)
 
     def dumps(self) -> str:
@@ -68,6 +69,9 @@ class ConfigFile(ConfigObject):
         else:
             self.path = fd.name.replace('/', '.').replace('\\', '.')
         self.fd = fd
+
+        self.load()
+        self.fd.seek(0)
 
     def dump(self):
         """
