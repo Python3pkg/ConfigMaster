@@ -114,12 +114,6 @@ class ConfigFile(ConfigObject):
         self.fd = open(self.fd.name, 'r')
         self.load()
 
-    def initial_populate(self, data):
-        """
-        Repopulate the ConfigMaster object with data.
-        :param data: The data to populate.
-        :return: If it was populated.
-        """
 
 
 class NetworkedConfigObject(ConfigObject):
