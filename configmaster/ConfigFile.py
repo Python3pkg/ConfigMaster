@@ -44,7 +44,6 @@ class ConfigFile(ConfigObject):
     """
     The abstract base class for a ConfigFile object. All config files extend from this.
 
-
     It automatically provides opening of the file and creating it if it doesn't exist, and provides a basic reload() method to automatically reload the files from disk.
     """
     def __init__(self, fd: str, safe_load: bool=True, json_fix: bool=False):
@@ -70,7 +69,6 @@ class ConfigFile(ConfigObject):
             self.path = fd.name.replace('/', '.').replace('\\', '.')
         self.fd = fd
 
-        self.load()
         self.fd.seek(0)
 
     def dump(self):
@@ -104,8 +102,12 @@ class ConfigFile(ConfigObject):
         return True
 
 class NetworkedConfigObject(ConfigObject):
+    """
+    An abstract Networked Config object.
+
+    This is commonly used for downloading "default" config files, and applying them to real config files.
+    """
     def __init__(self, url: str, safe_load: bool=True):
-        super().__init__(safe_load=safe_load)
         self.url = url
         # Try and get url.
         try:
@@ -116,8 +118,25 @@ class NetworkedConfigObject(ConfigObject):
         if self.request.status_code != 200:
             raise exc.NetworkedFileException("Failed to download file: Status code responded was {}".format(self.request.status_code))
 
+        super().__init__(safe_load=safe_load)
+
     def dump(self):
         raise exc.WriterException("Cannot write to a networked JSON file.")
 
     def initial_populate(self, data):
         raise exc.WriterException("Cannot write to a networked JSON file.")
+
+    def __create_normal_class(self, *args, **kwargs):
+        """
+        This gets the normal class for the NetworkedConfigObject.
+        """
+        raise NotImplementedError
+
+    def save_to_file(self, filename: str):
+        """
+        This converts the NetworkedConfigFile into a normal ConfigFile object.
+
+        This requires the __create_normal_class method to be implemented.
+        """
+        newclass = self.__create_normal_class(filename)
+        return newclass
