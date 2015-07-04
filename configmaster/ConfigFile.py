@@ -86,7 +86,7 @@ class ConfigFile(ConfigObject):
         self.fd = fd
 
         self.data = self.fd.read()
-
+        self.fd.seek(0)
         self.load()
 
     def reload(self):
@@ -118,7 +118,7 @@ class NetworkedConfigObject(ConfigObject):
 
     This is commonly used for downloading "default" config files, and applying them to real config files.
     """
-    def __init__(self, url: str, load_hook=None, safe_load: bool=True):
+    def __init__(self, url: str, normal_class_load_hook, normal_class_dump_hook, load_hook, safe_load: bool=True):
         self.url = url
         # Try and get url.
         try:
@@ -129,7 +129,9 @@ class NetworkedConfigObject(ConfigObject):
         if self.request.status_code != 200:
             raise exc.NetworkedFileException("Failed to download file: Status code responded was {}".format(self.request.status_code))
 
-        super().__init__(safe_load=safe_load)
+        super().__init__(safe_load=safe_load, load_hook=load_hook)
+
+        self.normal_class_hook = (normal_class_load_hook, normal_class_dump_hook)
 
         self.data = self.request.text
 
@@ -138,17 +140,12 @@ class NetworkedConfigObject(ConfigObject):
     def initial_populate(self, data):
         raise exc.NetworkedFileException("Cannot write to a networked file.")
 
-    def __create_normal_class(self, *args, **kwargs):
-        """
-        This gets the normal class for the NetworkedConfigObject.
-        """
-        raise NotImplementedError
-
-    def save_to_file(self, filename: str):
+    def save_to_file(self, filename: str) -> ConfigFile:
         """
         This converts the NetworkedConfigFile into a normal ConfigFile object.
 
         This requires the __create_normal_class method to be implemented.
         """
-        newclass = self.__create_normal_class(filename, load_hook=self.load_hook)
+        newclass = ConfigFile(fd=filename, load_hook=self.normal_class_hook[0],
+                              dump_hook=self.normal_class_hook[1], safe_load=self.safe_load)
         return newclass
