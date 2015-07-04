@@ -1,6 +1,8 @@
 ConfigMaster
 ------------
 
+|Build Status| |PyPI version| |PyPI DailyDownloads|
+
 What is ConfigMaster?
 ---------------------
 
@@ -18,23 +20,12 @@ What is supported
 TODO
 ~~~~
 
--  Add in support for python ConfigParser formats
--  
-
-   .. raw:: html
-
-      <del>
-
-   Add in networked JSON support
-
-   .. raw:: html
-
-      </del>
-
-   *Added in version 1.3.0*
+-  [STRIKEOUT:Add in support for python ConfigParser formats] *Added in
+   version 1.4.0*
+-  [STRIKEOUT:Add in networked JSON support] *Added in version 1.3.0*
 -  Add more docstrings
 -  Make proper documentation
--  Add tests
+-  [STRIKEOUT:Add tests] *Added in version 1.3.1*
 
 How to install
 ~~~~~~~~~~~~~~
@@ -95,3 +86,10 @@ Need to get the raw dict form of a ConfigKey? Use .dump() on that!
     {"a": 1, "b": [1, 2], "c": {"d": 3}
     >>> cfg.config.c.dump()
     {"d": 3}
+
+.. |Build Status| image:: https://drone.io/bitbucket.org/SunDwarf/configmaster/status.png
+   :target: https://drone.io/bitbucket.org/SunDwarf/configmaster/latest
+.. |PyPI version| image:: https://badge.fury.io/py/ConfigMaster.svg
+   :target: http://badge.fury.io/py/ConfigMaster
+.. |PyPI DailyDownloads| image:: https://img.shields.io/pypi/dd/ConfigMaster.svg
+   :target: https://pypi.python.org/pypi/ConfigMaster/

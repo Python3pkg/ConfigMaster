@@ -1,6 +1,10 @@
 ConfigMaster
 ------------
 
+[![Build Status](https://drone.io/bitbucket.org/SunDwarf/configmaster/status.png)](https://drone.io/bitbucket.org/SunDwarf/configmaster/latest)
+[![PyPI version](https://img.shields.io/pypi/v/ConfigMaster.svg)](https://pypi.python.org/pypi/ConfigMaster/)
+[![PyPI DailyDownloads](https://img.shields.io/pypi/dd/ConfigMaster.svg)](https://pypi.python.org/pypi/ConfigMaster/)
+
 ## What is ConfigMaster?  
 ConfigMaster is a simple library for accessing config files programmatically. No longer will you have to mess with list lookups and dict lookups when you wish to load a config file.  
 Instead, objects in the file are accessed as simple class attributes.  
@@ -11,11 +15,11 @@ ConfigMaster natively supports JSON and YAML formats.
 The recommended format is YAML.  
 
 ### TODO
- - Add in support for python ConfigParser formats
+ - ~~Add in support for python ConfigParser formats~~ *Added in version 1.4.0*
  - ~~Add in networked JSON support~~ *Added in version 1.3.0*
  - Add more docstrings
  - Make proper documentation
- - Add tests
+ - ~~Add tests~~ *Added in version 1.3.1*
 
 ### How to install
 For the latest stable version uploaded to PyPI, use:  
