@@ -153,19 +153,12 @@ def test_network_json_get_bad_url():
 @pytest.mark.skipif(not __site_up, reason="JSONTest site is not up - cannot perform tests currently.")
 @pytest.mark.skipif(not __has_requests, reason="Requests must be installed to use Networked JSON tests.")
 def test_network_json_get_unsafe_data():
-    cfg = NetworkedJSONConfigFile("http://echo.jsontest.com/__dict__/v/dump/lol", verify=True)
+    cfg = NetworkedJSONConfigFile("http://echo.jsontest.com/__dict__/v/dump/lol")
     assert hasattr(cfg.config, "unsafe___dict__")
     assert cfg.config.unsafe___dict__ == "v"
     assert hasattr(cfg.config, "unsafe_dump")
     assert cfg.config.unsafe_dump == "lol"
 
-@pytest.mark.skipif(not __site_up, reason="JSONTest site is not up - cannot perform tests currently.")
-@pytest.mark.skipif(not __has_requests, reason="Requests must be installed to use Networked JSON tests.")
-@pytest.mark.xfail
-def test_network_json_get_unsafe_data_no_verification():
-    cfg = NetworkedJSONConfigFile("http://echo.jsontest.com/dump/lol", verify=False)
-    assert hasattr(cfg.config, "dump")
-    cfg.config.dump()
 
 @pytest.mark.skipif(not __site_up, reason="JSONTest site is not up - cannot perform tests currently.")
 @pytest.mark.skipif(not __has_requests, reason="Requests must be installed to use Networked JSON tests.")
