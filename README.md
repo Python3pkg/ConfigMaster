@@ -2,7 +2,7 @@ ConfigMaster
 ------------
 
 [![Build Status](https://drone.io/bitbucket.org/SunDwarf/configmaster/status.png)](https://drone.io/bitbucket.org/SunDwarf/configmaster/latest)
-[![PyPI version](https://badge.fury.io/py/ConfigMaster.svg)](http://badge.fury.io/py/ConfigMaster)
+[![PyPI version](https://img.shields.io/pypi/v/ConfigMaster.svg)](https://pypi.python.org/pypi/ConfigMaster/)
 [![PyPI DailyDownloads](https://img.shields.io/pypi/dd/ConfigMaster.svg)](https://pypi.python.org/pypi/ConfigMaster/)
 
 ## What is ConfigMaster?  
