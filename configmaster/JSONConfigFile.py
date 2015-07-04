@@ -1,15 +1,16 @@
 import json
 
 from configmaster.ConfigFile import ConfigFile, NetworkedConfigObject
-
 from configmaster import exc
 
 try:
     import requests
+
     __networked_json = True
 except ImportError:
     __networked_json = False
     raise ImportWarning("Cannot use networked JSON support. Install requests to enable it.")
+
 
 class JSONConfigFile(ConfigFile):
     """
@@ -32,6 +33,7 @@ class JSONConfigFile(ConfigFile):
     >>> # Sample JSON data is {"abc": [1, 2, 3]}
     ... print(cfg.config.abc) # Prints [1, 2, 3]
     """
+
     def __init__(self, fd: str, safe_load: bool=True, obj_decoder: object=None):
         """
         :param fd: The file to load.
@@ -40,7 +42,7 @@ class JSONConfigFile(ConfigFile):
         # A custom object decoder hook.
         self.decoder = obj_decoder
         super().__init__(fd, safe_load, json_fix=True)
-
+        self.load()
 
     def load(self):
         # Load the data from the JSON file.
@@ -78,14 +80,14 @@ class NetworkedJSONConfigFile(NetworkedConfigObject):
 
     This module requires requests to download the file.
     """
+
     def __init__(self, addr: str, custom_object_hook=None):
         """
         :param addr: The address to load from.
         :param custom_object_hook: The object hook to use, if specified.
         """
-        super().__init__(addr)
-
         self.object_hook = custom_object_hook
+        super().__init__(addr)
 
         self.load()
 
@@ -111,6 +113,9 @@ class NetworkedJSONConfigFile(NetworkedConfigObject):
 
     def dumps(self):
         return json.dumps(self.config.dump())
+
+    def __create_normal_class(self, filename: str):
+        return JSONConfigFile(fd=filename, safe_load=self.safe_load)
 
 
 if not __networked_json:
