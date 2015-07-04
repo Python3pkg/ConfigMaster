@@ -9,6 +9,8 @@ from .ConfigFile import ConfigFile, NetworkedConfigObject
 
 from . import exc
 
+from .ConfigGenerator import GenerateConfigFile, GenerateNetworkedConfigFile
+
 
 def cload_safe(fd):
     """
@@ -28,47 +30,11 @@ def cload_load(fd):
     return yaml.load(fd, Loader=yaml.CLoader)
 
 
-class YAMLConfigFile(ConfigFile):
-    """
-    The core YAMLConfigFile class.
-
-    This handles automatically opening/creating the YAML configuration files.
-
-    >>> import configmaster.YAMLConfigFile
-    >>> cfg = configmaster.YAMLConfigFile.YAMLConfigFile("test.yml") # Accepts a string for input
-
-    >>> fd = open("test.yml") # Accepts a file descriptor too
-    >>> cfg2 = configmaster.YAMLConfigFile.YAMLConfigFile(fd)
-
-    ConfigMaster objects accepts either a string for the relative path of the YAML file to load, or a :io.TextIOBase: object to read from.
-    If you pass in a string, the file will automatically be created if it doesn't exist. However, if you do not have permission to write to it, a :PermissionError: will be raised.
-
-    To access config objects programmatically, a config object is exposed via the use of cfg.config.
-    These config objects can be accessed via cfg.config.attr, without having to resort to looking up objects in a dict.
-
-    >>> # Sample YAML data is abc: [1, 2, 3]
-    ... print(cfg.config.abc) # Prints [1, 2, 3]
-
-    ConfigMaster automatically uses YAML's CLoader/CSafeLoader and CDumper for speed performances.
-
-    By default, all loads are safe. You can turn this off by passing safe_load as False.
-    However, you must remember that these can construct **ANY ARBITRARY PYTHON OBJECT**. Make sure to verify the data before you unsafe load it.
-    """
-
-    def __init__(self, fd: str, safe_load: bool=True):
-        """
-        :param fd: The file to load.
-                Either a string or a :io.TextIOBase: object.
-        :param safe_load: Should we safe_load or not?
-        """
-        super().__init__(fd, safe_load=safe_load)
-
-        self.load()
-
-    def load(self):
+def yaml_load_hook(load_net: False):
+    def actual_load_hook(cfg: ConfigFile):
         # Should we safe load the file using YAML's Safe loader?
         # This is always on by default, for security reasons.
-        if self.safe_load:
+        if cfg.safe_load:
             # Assign 'loader' to the safe YAML CSafeLoader.
             if yaml.__with_libyaml__:
                 loader = cload_safe
@@ -82,81 +48,38 @@ class YAMLConfigFile(ConfigFile):
                 loader = yaml.load
         # Setup dumper.
         if yaml.__with_libyaml__:
-            self.dumper = yaml.CDumper
+            cfg.dumper = yaml.CDumper
         else:
-            self.dumper = yaml.Dumper
+            cfg.dumper = yaml.Dumper
         # Load the YAML file.
         try:
-            data = loader(self.fd)
+            if not load_net:
+                data = loader(cfg.fd)
+            elif load_net and isinstance(cfg, NetworkedConfigObject):
+                data = loader(cfg.request.text)
+            else:
+                raise exc.LoaderException("No data source to load from.")
         except UnicodeDecodeError:
             raise exc.LoaderException("Selected file was not in a valid encoding format.")
         except yaml.scanner.ScannerError:
             raise exc.LoaderException("Selected file had invalid YAML tokens.")
         # Serialize the data into new sets of ConfigKey classes.
-        self.config.load_from_dict(data)
+        cfg.config.load_from_dict(data)
+    return actual_load_hook
 
-    def dump(self):
-        """
-        Dumps all the data into a YAML file.
-        """
-        name = self.fd.name
-        self.fd.close()
-        self.fd = open(name, 'w')
-
-        data = self.config.dump()
-        yaml.dump(data, self.fd, Dumper=self.dumper, default_flow_style=False)
-        self.reload()
-
-    def dumps(self):
-        return yaml.dump(self.config.dump(), default_flow_style=False)
-
-
-class NetworkedYAMLConfigFile(NetworkedConfigObject):
+def yaml_dump_hook(cfg):
     """
-    This is a class for a network YAML configuration file.
-
-    Networked YAML files are very similar to regular YAML config files, except they don't support dumping to a file.
-
-    By default, files are verified to prevent things like arbitrary object creation.
-
-    This module requires requests to download the file.
+    Dumps all the data into a YAML file.
     """
+    name = cfg.fd.name
+    cfg.fd.close()
+    cfg.fd = open(name, 'w')
 
-    def __init__(self, addr: str, safe_load: bool=True):
-        """
-        :param addr: The address to load from.
-        :param safe_load: The object hook to use, if specified.
-        """
-        super().__init__(addr, safe_load=safe_load)
-        self.load()
+    data = cfg.config.dump()
+    yaml.dump(data, cfg.fd, Dumper=cfg.dumper, default_flow_style=False)
+    cfg.reload()
 
-    def __create_normal_class(self, filename):
-        return YAMLConfigFile(fd=filename, safe_load=self.safe_load)
 
-    def load(self):
-        # Try and load file.
-        if self.safe_load:
-            # Assign 'loader' to the safe YAML CSafeLoader.
-            if yaml.__with_libyaml__:
-                self.loader = cload_safe
-            else:
-                self.loader = yaml.safe_load
-        # Otherwise, use the YAML CLoader.
-        else:
-            if yaml.__with_libyaml__:
-                self.loader = cload_load
-            else:
-                self.loader = yaml.load
-        # Setup dumper.
-        if yaml.__with_libyaml__:
-            self.dumper = yaml.CDumper
-        else:
-            self.dumper = yaml.Dumper
-
-        data = self.loader(self.request.text)
-        # Load it into a ConfigKey.
-        self.config.load_from_dict(data)
-        # Done!
-
-    def dumps(self):
-        return yaml.dump(self.config.dump())
+YAMLConfigFile = GenerateConfigFile(load_hook=yaml_load_hook(False), dump_hook=yaml_dump_hook)
+NetworkedYAMLConfigFile = GenerateNetworkedConfigFile(load_hook=yaml_load_hook(True),
+                        normal_class_load_hook=yaml_load_hook(True), normal_class_dump_hook=yaml_dump_hook)
