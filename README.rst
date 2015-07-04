@@ -1,7 +1,7 @@
 ConfigMaster
 ------------
 
-|Build Status| |PyPI version|
+|Build Status| |PyPI version| |PyPI DailyDownloads|
 
 What is ConfigMaster?
 ---------------------
@@ -91,3 +91,5 @@ Need to get the raw dict form of a ConfigKey? Use .dump() on that!
    :target: https://drone.io/bitbucket.org/SunDwarf/configmaster/latest
 .. |PyPI version| image:: https://badge.fury.io/py/ConfigMaster.svg
    :target: http://badge.fury.io/py/ConfigMaster
+.. |PyPI DailyDownloads| image:: https://img.shields.io/pypi/dd/ConfigMaster.svg
+   :target: https://pypi.python.org/pypi/ConfigMaster/
