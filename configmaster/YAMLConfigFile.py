@@ -2,14 +2,13 @@ try:
     import yaml
     import yaml.scanner
 except ImportError:
-    raise exc.FiletypeNotSupportedException("You have not installed the PyYAML library. Install it via `pip install PyYAML`.")
+    raise exc.FiletypeNotSupportedException(
+        "You have not installed the PyYAML library. Install it via `pip install PyYAML`.")
 
-import io
-from .ConfigFile import ConfigFile
+from .ConfigFile import ConfigFile, NetworkedConfigObject
 
 from . import exc
 
-from . import ConfigKey
 
 def cload_safe(fd):
     """
@@ -19,6 +18,7 @@ def cload_safe(fd):
     """
     return yaml.load(fd, Loader=yaml.CSafeLoader)
 
+
 def cload_load(fd):
     """
     Wrapper for the YAML Cloader.
@@ -26,6 +26,7 @@ def cload_load(fd):
     :return: The YAML dict.
     """
     return yaml.load(fd, Loader=yaml.CLoader)
+
 
 class YAMLConfigFile(ConfigFile):
     """
@@ -53,6 +54,7 @@ class YAMLConfigFile(ConfigFile):
     By default, all loads are safe. You can turn this off by passing safe_load as False.
     However, you must remember that these can construct **ANY ARBITRARY PYTHON OBJECT**. Make sure to verify the data before you unsafe load it.
     """
+
     def __init__(self, fd: str, safe_load: bool=True):
         """
         :param fd: The file to load.
@@ -60,6 +62,8 @@ class YAMLConfigFile(ConfigFile):
         :param safe_load: Should we safe_load or not?
         """
         super().__init__(fd, safe_load=safe_load)
+
+        self.load()
 
     def load(self):
         # Should we safe load the file using YAML's Safe loader?
@@ -91,7 +95,6 @@ class YAMLConfigFile(ConfigFile):
         # Serialize the data into new sets of ConfigKey classes.
         self.config.load_from_dict(data)
 
-
     def dump(self):
         """
         Dumps all the data into a YAML file.
@@ -104,6 +107,56 @@ class YAMLConfigFile(ConfigFile):
         yaml.dump(data, self.fd, Dumper=self.dumper, default_flow_style=False)
         self.reload()
 
-
     def dumps(self):
         return yaml.dump(self.config.dump(), default_flow_style=False)
+
+
+class NetworkedYAMLConfigFile(NetworkedConfigObject):
+    """
+    This is a class for a network YAML configuration file.
+
+    Networked YAML files are very similar to regular YAML config files, except they don't support dumping to a file.
+
+    By default, files are verified to prevent things like arbitrary object creation.
+
+    This module requires requests to download the file.
+    """
+
+    def __init__(self, addr: str, safe_load: bool=True):
+        """
+        :param addr: The address to load from.
+        :param safe_load: The object hook to use, if specified.
+        """
+        super().__init__(addr, safe_load=safe_load)
+        self.load()
+
+    def __create_normal_class(self, filename):
+        return YAMLConfigFile(fd=filename, safe_load=self.safe_load)
+
+    def load(self):
+        # Try and load file.
+        if self.safe_load:
+            # Assign 'loader' to the safe YAML CSafeLoader.
+            if yaml.__with_libyaml__:
+                self.loader = cload_safe
+            else:
+                self.loader = yaml.safe_load
+        # Otherwise, use the YAML CLoader.
+        else:
+            if yaml.__with_libyaml__:
+                self.loader = cload_load
+            else:
+                self.loader = yaml.load
+        # Setup dumper.
+        if yaml.__with_libyaml__:
+            self.dumper = yaml.CDumper
+        else:
+            self.dumper = yaml.Dumper
+
+        data = self.loader(self.request.text)
+        # Load it into a ConfigKey.
+        self.config.load_from_dict(data)
+        # Done!
+
+    def dumps(self):
+        return yaml.dump(self.config.dump())
