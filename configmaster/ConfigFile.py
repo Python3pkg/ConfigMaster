@@ -19,6 +19,10 @@ class ConfigObject(object):
     All types of config file extend from this.
 
     This provides several methods that don't need to be re-implemented in sub classes.
+
+    Notes:
+        - This provides an access to the data to load via a self.data attribute.
+        - Need to call the load/dump hooks? Get them via load_hook or dump_hook.
     """
 
     def __init__(self, safe_load: bool=True, load_hook=None, dump_hook=None):
@@ -26,6 +30,7 @@ class ConfigObject(object):
         self.load_hook = load_hook
         self.dump_hook = dump_hook
         self.config = ConfigKey.ConfigKey(safe_load)
+        self.data = None
 
     def dumps(self) -> str:
         """
@@ -80,6 +85,8 @@ class ConfigFile(ConfigObject):
             self.path = fd.name.replace('/', '.').replace('\\', '.')
         self.fd = fd
 
+        self.data = self.fd.read()
+
         self.load()
 
     def reload(self):
@@ -124,6 +131,10 @@ class NetworkedConfigObject(ConfigObject):
 
         super().__init__(safe_load=safe_load)
 
+        self.data = self.request.text
+
+        self.load()
+
     def initial_populate(self, data):
         raise exc.NetworkedFileException("Cannot write to a networked file.")
 
@@ -139,5 +150,5 @@ class NetworkedConfigObject(ConfigObject):
 
         This requires the __create_normal_class method to be implemented.
         """
-        newclass = self.__create_normal_class(filename)
+        newclass = self.__create_normal_class(filename, load_hook=self.load_hook)
         return newclass
