@@ -32,6 +32,29 @@ def cload_load(fd):
 
 def yaml_load_hook(load_net: False):
     def actual_load_hook(cfg: ConfigFile):
+        """
+        This handles automatically opening/creating the YAML configuration files.
+
+        >>> import configmaster.YAMLConfigFile
+        >>> cfg = configmaster.YAMLConfigFile.YAMLConfigFile("test.yml") # Accepts a string for input
+
+        >>> fd = open("test.yml") # Accepts a file descriptor too
+        >>> cfg2 = configmaster.YAMLConfigFile.YAMLConfigFile(fd)
+
+        ConfigMaster objects accepts either a string for the relative path of the YAML file to load, or a :io.TextIOBase: object to read from.
+        If you pass in a string, the file will automatically be created if it doesn't exist. However, if you do not have permission to write to it, a :PermissionError: will be raised.
+
+        To access config objects programmatically, a config object is exposed via the use of cfg.config.
+        These config objects can be accessed via cfg.config.attr, without having to resort to looking up objects in a dict.
+
+        >>> # Sample YAML data is abc: [1, 2, 3]
+        ... print(cfg.config.abc) # Prints [1, 2, 3]
+
+        ConfigMaster automatically uses YAML's CLoader/CSafeLoader and CDumper for speed performances.
+
+        By default, all loads are safe. You can turn this off by passing safe_load as False.
+        However, you must remember that these can construct **ANY ARBITRARY PYTHON OBJECT**. Make sure to verify the data before you unsafe load it.
+        """
         # Should we safe load the file using YAML's Safe loader?
         # This is always on by default, for security reasons.
         if cfg.safe_load:
