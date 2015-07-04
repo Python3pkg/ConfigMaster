@@ -121,10 +121,10 @@ class NetworkedConfigObject(ConfigObject):
         super().__init__(safe_load=safe_load)
 
     def dump(self):
-        raise exc.WriterException("Cannot write to a networked JSON file.")
+        raise exc.WriterException("Cannot write to a networked file.")
 
     def initial_populate(self, data):
-        raise exc.WriterException("Cannot write to a networked JSON file.")
+        raise exc.WriterException("Cannot write to a networked file.")
 
     def __create_normal_class(self, *args, **kwargs):
         """
