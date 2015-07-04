@@ -56,6 +56,20 @@ class ConfigObject(object):
         """
         return self.dump_hook(self)
 
+    def initial_populate(self, data):
+        """
+        Populate a newly created config object with data.
+
+        If it was populated, this returns True. If it wasn't, this returns False.
+
+        It is recommended to run a .dump() and .reload() after running this.
+        """
+        if self.config.parsed:
+            return False
+        # Otherwise, create a new ConfigKey.
+        self.config.load_from_dict(data)
+        return True
+
 class ConfigFile(ConfigObject):
     """
     The abstract base class for a ConfigFile object. All config files extend from this.
@@ -106,11 +120,7 @@ class ConfigFile(ConfigObject):
         :param data: The data to populate.
         :return: If it was populated.
         """
-        if self.config.parsed:
-            return False
-        # Otherwise, create a new ConfigKey.
-        self.config.load_from_dict(data)
-        return True
+
 
 class NetworkedConfigObject(ConfigObject):
     """
@@ -144,7 +154,7 @@ class NetworkedConfigObject(ConfigObject):
         """
         This converts the NetworkedConfigFile into a normal ConfigFile object.
 
-        This requires the __create_normal_class method to be implemented.
+        This requires the normal class hooks to be provided.
         """
         newclass = ConfigFile(fd=filename, load_hook=self.normal_class_hook[0],
                               dump_hook=self.normal_class_hook[1], safe_load=self.safe_load)
