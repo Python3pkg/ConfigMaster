@@ -28,6 +28,7 @@ class INIConfigFile(ConfigFile.ConfigFile):
         """
         self.tmpini = None
         super().__init__(fd, safe_load)
+        self.load()
 
     def load(self):
         # Load the data from the INI file.
