@@ -115,7 +115,6 @@ class ConfigFile(ConfigObject):
         self.load()
 
 
-
 class NetworkedConfigObject(ConfigObject):
     """
     An abstract Networked Config object.
