@@ -14,10 +14,12 @@ What is ConfigMaster?
 What is supported
 ~~~~~~~~~~~~~~~~~
 
-ConfigMaster supports the following formats built-in: - YAML Config
-Files (through the ``PyYAML`` module) - JSON Config Files (through
-``json``) - INI Config Files (through ``ConfigParser``) - Networked
-versions of YAML/JSON files.
+ConfigMaster supports the following formats built-in:
+
+-  YAML Config Files (through the ``PyYAML`` module)
+-  JSON Config Files (through ``json``)
+-  INI Config Files (through ``ConfigParser``)
+-  Networked versions of YAML/JSON files.
 
 Support for different types of config files grows all the time - feel
 free to fork and add support!
