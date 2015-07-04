@@ -11,7 +11,8 @@ Instead, objects in the file are accessed as simple class attributes.
 
 ### What is supported
 
-ConfigMaster supports the following formats built-in:
+ConfigMaster supports the following formats built-in: 
+ 
  - YAML Config Files (through the `PyYAML` module)
  - JSON Config Files (through `json`)
  - INI Config Files (through `ConfigParser`)
