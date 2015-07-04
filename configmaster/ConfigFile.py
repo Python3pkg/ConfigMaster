@@ -9,6 +9,9 @@ except ImportError:
 from configmaster import ConfigKey
 from configmaster import exc
 
+def networked_dump_hook(*args, **kwargs):
+    raise exc.NetworkedFileException("Cannot write to a networked file.")
+
 class ConfigObject(object):
     """
     The abstract base class for a Config object.
@@ -16,11 +19,18 @@ class ConfigObject(object):
     All types of config file extend from this.
 
     This provides several methods that don't need to be re-implemented in sub classes.
+
+    Notes:
+        - This provides an access to the data to load via a self.data attribute.
+        - Need to call the load/dump hooks? Get them via load_hook or dump_hook.
     """
 
-    def __init__(self, safe_load: bool=True):
+    def __init__(self, safe_load: bool=True, load_hook=None, dump_hook=None):
         self.safe_load = safe_load
+        self.load_hook = load_hook
+        self.dump_hook = dump_hook
         self.config = ConfigKey.ConfigKey(safe_load)
+        self.data = None
 
     def dumps(self) -> str:
         """
@@ -36,9 +46,29 @@ class ConfigObject(object):
 
     def load(self):
         """
-        Abstract load method.
+        This loads the config file using the hook provided. The ConfigObject object is passed in as argument one.
         """
-        raise NotImplementedError
+        return self.load_hook(self)
+
+    def dump(self):
+        """
+        This dumps the config file using the hook provided. The ConfigObject is passed in as argument one.
+        """
+        return self.dump_hook(self)
+
+    def initial_populate(self, data):
+        """
+        Populate a newly created config object with data.
+
+        If it was populated, this returns True. If it wasn't, this returns False.
+
+        It is recommended to run a .dump() and .reload() after running this.
+        """
+        if self.config.parsed:
+            return False
+        # Otherwise, create a new ConfigKey.
+        self.config.load_from_dict(data)
+        return True
 
 class ConfigFile(ConfigObject):
     """
@@ -46,8 +76,8 @@ class ConfigFile(ConfigObject):
 
     It automatically provides opening of the file and creating it if it doesn't exist, and provides a basic reload() method to automatically reload the files from disk.
     """
-    def __init__(self, fd: str, safe_load: bool=True, json_fix: bool=False):
-        super().__init__(safe_load)
+    def __init__(self, fd: str, load_hook=None, dump_hook=None  , safe_load: bool=True, json_fix: bool=False):
+        super().__init__(safe_load, load_hook=load_hook, dump_hook=dump_hook)
         # Check if fd is a string
         if isinstance(fd, str):
             self.path = fd.replace('/', '.').replace('\\', '.')
@@ -69,14 +99,9 @@ class ConfigFile(ConfigObject):
             self.path = fd.name.replace('/', '.').replace('\\', '.')
         self.fd = fd
 
+        self.data = self.fd.read()
         self.fd.seek(0)
-
-    def dump(self):
-        """
-        Abstract dump method.
-        """
-        raise NotImplementedError
-
+        self.load()
 
     def reload(self):
         """
@@ -89,17 +114,6 @@ class ConfigFile(ConfigObject):
         self.fd = open(self.fd.name, 'r')
         self.load()
 
-    def initial_populate(self, data):
-        """
-        Repopulate the ConfigMaster object with data.
-        :param data: The data to populate.
-        :return: If it was populated.
-        """
-        if self.config.parsed:
-            return False
-        # Otherwise, create a new ConfigKey.
-        self.config.load_from_dict(data)
-        return True
 
 class NetworkedConfigObject(ConfigObject):
     """
@@ -107,7 +121,7 @@ class NetworkedConfigObject(ConfigObject):
 
     This is commonly used for downloading "default" config files, and applying them to real config files.
     """
-    def __init__(self, url: str, safe_load: bool=True):
+    def __init__(self, url: str, normal_class_load_hook, normal_class_dump_hook, load_hook, safe_load: bool=True):
         self.url = url
         # Try and get url.
         try:
@@ -118,25 +132,23 @@ class NetworkedConfigObject(ConfigObject):
         if self.request.status_code != 200:
             raise exc.NetworkedFileException("Failed to download file: Status code responded was {}".format(self.request.status_code))
 
-        super().__init__(safe_load=safe_load)
+        super().__init__(safe_load=safe_load, load_hook=load_hook)
 
-    def dump(self):
-        raise exc.WriterException("Cannot write to a networked file.")
+        self.normal_class_hook = (normal_class_load_hook, normal_class_dump_hook)
+
+        self.data = self.request.text
+
+        self.load()
 
     def initial_populate(self, data):
-        raise exc.WriterException("Cannot write to a networked file.")
+        raise exc.NetworkedFileException("Cannot write to a networked file.")
 
-    def __create_normal_class(self, *args, **kwargs):
-        """
-        This gets the normal class for the NetworkedConfigObject.
-        """
-        raise NotImplementedError
-
-    def save_to_file(self, filename: str):
+    def save_to_file(self, filename: str) -> ConfigFile:
         """
         This converts the NetworkedConfigFile into a normal ConfigFile object.
 
-        This requires the __create_normal_class method to be implemented.
+        This requires the normal class hooks to be provided.
         """
-        newclass = self.__create_normal_class(filename)
+        newclass = ConfigFile(fd=filename, load_hook=self.normal_class_hook[0],
+                              dump_hook=self.normal_class_hook[1], safe_load=self.safe_load)
         return newclass

@@ -14,8 +14,13 @@ What is ConfigMaster?
 What is supported
 ~~~~~~~~~~~~~~~~~
 
-| ConfigMaster natively supports JSON and YAML formats.
-| The recommended format is YAML.
+ConfigMaster supports the following formats built-in: - YAML Config
+Files (through the ``PyYAML`` module) - JSON Config Files (through
+``json``) - INI Config Files (through ``ConfigParser``) - Networked
+versions of YAML/JSON files.
+
+Support for different types of config files grows all the time - feel
+free to fork and add support!
 
 TODO
 ~~~~
@@ -50,8 +55,15 @@ your file, and the values will be automatically loaded for you.
     >>> from configmaster import YAMLConfigFile  
     >>> cfg = YAMLConfigFile.YAMLConfigFile("test.yml") # Created automatically if it doesn't exist  
 
-To access config values, simply get the attribute you want from the
-config object stored.
+Networked config files are supported too.
+
+::
+
+    >>> from configmaster import JSONConfigFile
+    >>> cfg = JSONConfigFile.NetworkedJSONConfigFile("http://example.com/data.json")
+
+To access config values, get the attribute you want from the config
+object stored.
 
 ::
 
@@ -65,18 +77,26 @@ config object stored.
 
 To populate your config data, just pass a dict to initial\_populate. If
 the file is empty, this gives it default values, and returns True. If it
-isn't, nothing happens.
+isn't, nothing happens. *Note: This will fail with an
+exc.NetworkedFileException on networked files!*
 
 ::
 
     >>> pop = cfg.initial_populate({"a": 1, "b": [1, 2], "c": {"d": 3})
     >>> if pop: cfg.dump() and cfg.reload() # Dump data and reload from disk.
 
-To save your data, simply run .dump().
+To save your data, run .dump().
 
 ::
 
     >>> cfg.dump()
+
+Have a networked file that you need to save? Use the method
+save\_to\_file.
+
+::
+
+    >>> cfg.save_to_file("example.json")
 
 Need to get the raw dict form of a ConfigKey? Use .dump() on that!
 
@@ -89,7 +109,7 @@ Need to get the raw dict form of a ConfigKey? Use .dump() on that!
 
 .. |Build Status| image:: https://drone.io/bitbucket.org/SunDwarf/configmaster/status.png
    :target: https://drone.io/bitbucket.org/SunDwarf/configmaster/latest
-.. |PyPI version| image:: https://badge.fury.io/py/ConfigMaster.svg
-   :target: http://badge.fury.io/py/ConfigMaster
+.. |PyPI version| image:: https://img.shields.io/pypi/v/ConfigMaster.svg
+   :target: https://pypi.python.org/pypi/ConfigMaster/
 .. |PyPI DailyDownloads| image:: https://img.shields.io/pypi/dd/ConfigMaster.svg
    :target: https://pypi.python.org/pypi/ConfigMaster/

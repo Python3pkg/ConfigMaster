@@ -11,8 +11,13 @@ Instead, objects in the file are accessed as simple class attributes.
 
 ### What is supported
 
-ConfigMaster natively supports JSON and YAML formats.  
-The recommended format is YAML.  
+ConfigMaster supports the following formats built-in:
+ - YAML Config Files (through the `PyYAML` module)
+ - JSON Config Files (through `json`)
+ - INI Config Files (through `ConfigParser`)
+ - Networked versions of YAML/JSON files.
+ 
+Support for different types of config files grows all the time - feel free to fork and add support!
 
 ### TODO
  - ~~Add in support for python ConfigParser formats~~ *Added in version 1.4.0*
@@ -40,7 +45,14 @@ ConfigMaster handles everything for you. Simply specify the location of your fil
 >>> cfg = YAMLConfigFile.YAMLConfigFile("test.yml") # Created automatically if it doesn't exist  
 ```  
 
-To access config values, simply get the attribute you want from the config object stored.
+Networked config files are supported too.
+
+```
+>>> from configmaster import JSONConfigFile
+>>> cfg = JSONConfigFile.NetworkedJSONConfigFile("http://example.com/data.json")
+```
+
+To access config values, get the attribute you want from the config object stored.
 
 ```  
 # YAML data is {"a": 1, "b": [1, 2], "c": {"d": 3}}  
@@ -53,16 +65,24 @@ To access config values, simply get the attribute you want from the config objec
 ```  
 
 To populate your config data, just pass a dict to initial_populate. If the file is empty, this gives it default values, and returns True. If it isn't, nothing happens.
+*Note: This will fail with an exc.NetworkedFileException on networked files!*
 
 ```
 >>> pop = cfg.initial_populate({"a": 1, "b": [1, 2], "c": {"d": 3})
 >>> if pop: cfg.dump() and cfg.reload() # Dump data and reload from disk.
 ```
 
-To save your data, simply run .dump().
+To save your data, run .dump().
 
 ```
 >>> cfg.dump()
+```
+
+Have a networked file that you need to save?
+Use the method save_to_file.
+
+```
+>>> cfg.save_to_file("example.json")
 ```
 
 Need to get the raw dict form of a ConfigKey? Use .dump() on that!

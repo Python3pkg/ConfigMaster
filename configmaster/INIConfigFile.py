@@ -2,10 +2,10 @@ import configparser
 from configmaster import ConfigFile
 from configmaster import exc
 
-class INIConfigFile(ConfigFile.ConfigFile):
-    """
-    The core INIConfigFile class.
+from .ConfigGenerator import GenerateConfigFile
 
+def ini_load_hook(cfg):
+    """
     This handles automatically opening/creating the INI configuration files.
 
     >>> import configmaster.INIConfigFile
@@ -19,57 +19,46 @@ class INIConfigFile(ConfigFile.ConfigFile):
 
     To access config objects programmatically, a config object is exposed via the use of cfg.config.
     These config objects can be accessed via cfg.config.attr, without having to resort to looking up objects in a dict.
-
     """
-    def __init__(self, fd: str, safe_load: bool=True):
-        """
-        :param fd: The file to load.
-                Either a string or a :io.TextIOBase: object.
-        """
-        self.tmpini = None
-        super().__init__(fd, safe_load)
-        self.load()
 
-    def load(self):
-        # Load the data from the INI file.
-        self.tmpini = configparser.ConfigParser()
-        try:
-            self.tmpini.read_file(self.fd)
-        except ValueError as e:
-            raise exc.LoaderException("Could not decode INI file: {}".format(e))
-        # Sanitize data.
-        tmpdict = {}
-        for name in self.tmpini.sections():
-            data = dict(self.tmpini[name])
-            tmpdict[name] = data
+    # Load the data from the INI file.
+    cfg.tmpini = configparser.ConfigParser()
+    try:
+        cfg.tmpini.read_file(cfg.fd)
+    except ValueError as e:
+        raise exc.LoaderException("Could not decode INI file: {}".format(e))
+    # Sanitize data.
+    tmpdict = {}
+    for name in cfg.tmpini.sections():
+        data = dict(cfg.tmpini[name])
+        tmpdict[name] = data
 
-        # Serialize the data into new sets of ConfigKey classes.
-        self.config.load_from_dict(tmpdict)
+    # Serialize the data into new sets of ConfigKey classes.
+    cfg.config.load_from_dict(tmpdict)
 
-    def dump(self):
-        """
-        Dumps all the data into a INI file.
 
-        This will automatically kill anything with a '_' in the keyname, replacing it with a dot. You have been warned.
-        """
-        name = self.fd.name
-        self.fd.close()
-        self.fd = open(name, 'w')
+def ini_dump_hook(cfg):
+    """
+    Dumps all the data into a INI file.
 
-        data = self.config.dump()
+    This will automatically kill anything with a '_' in the keyname, replacing it with a dot. You have been warned.
+    """
+    name = cfg.fd.name
+    cfg.fd.close()
+    cfg.fd = open(name, 'w')
 
-        # Load data back into the goddamned ini file.
-        ndict = {}
-        for key, item in data.items():
-            key = key.replace('_', '.')
-            ndict[key] = item
+    data = cfg.config.dump()
 
-        self.tmpini = configparser.ConfigParser()
-        self.tmpini.read_dict(data)
+    # Load data back into the goddamned ini file.
+    ndict = {}
+    for key, item in data.items():
+        key = key.replace('_', '.')
+        ndict[key] = item
 
-        self.tmpini.write(self.fd)
-        self.reload()
+    cfg.tmpini = configparser.ConfigParser()
+    cfg.tmpini.read_dict(data)
 
-    def dumps(self):
-        raise NotImplementedError
+    cfg.tmpini.write(cfg.fd)
+    cfg.reload()
 
+INIConfigFile = GenerateConfigFile(load_hook=ini_load_hook, dump_hook=ini_dump_hook)
