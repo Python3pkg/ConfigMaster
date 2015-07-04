@@ -59,9 +59,9 @@ def test_initial_populate():
     cfg.dump() and cfg.reload()
     assert cfg.config.a == 1
 
-def test_dumps():
-    cfg = JSONConfigFile("test_data/bleh.json")
-    assert cfg.dumps() == "{\"a\": 1}"
+#def test_dumps():
+    #cfg = JSONConfigFile("test_data/bleh.json")
+    #assert cfg.dumps() == "{\"a\": 1}"
 
 def test_dumpd():
     cfg = JSONConfigFile("test_data/test.json")
