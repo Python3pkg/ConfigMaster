@@ -2,6 +2,8 @@
 [*2.0.3*:](https://github.com/SunDwarf/ConfigMaster/releases/tag/2.0.3)
 
  - Change JSONConfigFile to use request.json() rather than cfg.request.text and a load() call.
+ - Re-add an erroring dump() method to NetworkedConfigFile.
+ - Change test xfails to exc.NetworkedFileException.
 
 [*2.0.2*:](https://github.com/SunDwarf/ConfigMaster/releases/tag/2.0.2)
 

@@ -162,14 +162,14 @@ def test_network_json_get_unsafe_data():
 
 @pytest.mark.skipif(not __site_up, reason="JSONTest site is not up - cannot perform tests currently.")
 @pytest.mark.skipif(not __has_requests, reason="Requests must be installed to use Networked JSON tests.")
-@pytest.mark.xfail(raises=exc.WriterException)
+@pytest.mark.xfail(raises=exc.NetworkedFileException)
 def test_network_json_dump():
     cfg = NetworkedJSONConfigFile("http://echo.jsontest.com/k/v")
     cfg.dump()
 
 @pytest.mark.skipif(not __site_up, reason="JSONTest site is not up - cannot perform tests currently.")
 @pytest.mark.skipif(not __has_requests, reason="Requests must be installed to use Networked JSON tests.")
-@pytest.mark.xfail(raises=exc.WriterException)
+@pytest.mark.xfail(raises=exc.NetworkedFileException)
 def test_network_json_populate():
     cfg = NetworkedJSONConfigFile("http://echo.jsontest.com/k/v")
     cfg.initial_populate({})
