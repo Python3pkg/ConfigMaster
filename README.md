@@ -1,7 +1,7 @@
 ConfigMaster
 ------------
 
-[![Build Status](https://drone.io/github.com/SunDwarf/ConfigMaster/status.png)](https://drone.io/github.com/SunDwarf/ConfigMaster/latest)
+[![Build Status](https://travis-ci.org/SunDwarf/ConfigMaster.svg?branch=master)](https://travis-ci.org/SunDwarf/ConfigMaster)
 [![PyPI version](https://img.shields.io/pypi/v/ConfigMaster.svg)](https://pypi.python.org/pypi/ConfigMaster/)
 [![PyPI DailyDownloads](https://img.shields.io/pypi/dd/ConfigMaster.svg)](https://pypi.python.org/pypi/ConfigMaster/)
 

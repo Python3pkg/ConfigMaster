@@ -1,4 +1,8 @@
 ## ConfigMaster Changelog  
+[*2.0.4*:](https://github.com/SunDwarf/ConfigMaster/releases/tag/2.0.4)
+
+ - Fix for Python 3.2 and lower.
+
 [*2.0.3*:](https://github.com/SunDwarf/ConfigMaster/releases/tag/2.0.3)
 
  - Change JSONConfigFile to use request.json() rather than cfg.request.text and a load() call.
