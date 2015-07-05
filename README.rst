@@ -44,7 +44,7 @@ How to install
 | ``pip install git+https://github.com/SunDwarf/configmaster``
 
 | For the latest dev version, use:
-| ``pip install git+https://github.com/SunDwarf/configmaster@dev``
+| ``pip install git+https://github.com/SunDwarf/configmaster@develop``
 
 After installing, running the tests is recommended.
 
