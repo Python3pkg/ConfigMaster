@@ -140,6 +140,9 @@ class NetworkedConfigObject(ConfigObject):
 
         self.load()
 
+    def dump(self):
+        raise exc.NetworkedFileException("Cannot write to a networked file.")
+
     def initial_populate(self, data):
         raise exc.NetworkedFileException("Cannot write to a networked file.")
 

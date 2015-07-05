@@ -38,7 +38,7 @@ def json_load_hook(is_net: bool=False):
             if not is_net:
                 data = json.load(cfg.fd)
             else:
-                data = json.load(cfg.request.text)
+                data = cfg.request.json()
         except ValueError as e:
             raise exc.LoaderException("Could not decode JSON file: {}".format(e))
         # Serialize the data into new sets of ConfigKey classes.

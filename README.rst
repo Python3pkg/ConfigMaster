@@ -14,10 +14,12 @@ What is ConfigMaster?
 What is supported
 ~~~~~~~~~~~~~~~~~
 
-ConfigMaster supports the following formats built-in: - YAML Config
-Files (through the ``PyYAML`` module) - JSON Config Files (through
-``json``) - INI Config Files (through ``ConfigParser``) - Networked
-versions of YAML/JSON files.
+ConfigMaster supports the following formats built-in:
+
+-  YAML Config Files (through the ``PyYAML`` module)
+-  JSON Config Files (through ``json``)
+-  INI Config Files (through ``ConfigParser``)
+-  Networked versions of YAML/JSON files.
 
 Support for different types of config files grows all the time - feel
 free to fork and add support!
@@ -39,10 +41,14 @@ How to install
 | ``pip install configmaster``
 
 | For the latest stable version uploaded to bitbucket, use:
-| ``pip install hg+https://bitbucket.org/SunDwarf/configmaster``
+| ``pip install git+https://github.com/SunDwarf/configmaster``
 
 | For the latest dev version, use:
-| ``pip install hg+https://bitbucket.org/SunDwarf/configmaster@dev``
+| ``pip install git+https://github.com/SunDwarf/configmaster@dev``
+
+After installing, running the tests is recommended.
+
+``py.test -rfEsxXw -v --strict test.py``
 
 How to use
 ~~~~~~~~~~
@@ -107,8 +113,8 @@ Need to get the raw dict form of a ConfigKey? Use .dump() on that!
     >>> cfg.config.c.dump()
     {"d": 3}
 
-.. |Build Status| image:: https://drone.io/bitbucket.org/SunDwarf/configmaster/status.png
-   :target: https://drone.io/bitbucket.org/SunDwarf/configmaster/latest
+.. |Build Status| image:: https://drone.io/github.com/SunDwarf/ConfigMaster/status.png
+   :target: https://drone.io/github.com/SunDwarf/ConfigMaster/latest
 .. |PyPI version| image:: https://img.shields.io/pypi/v/ConfigMaster.svg
    :target: https://pypi.python.org/pypi/ConfigMaster/
 .. |PyPI DailyDownloads| image:: https://img.shields.io/pypi/dd/ConfigMaster.svg

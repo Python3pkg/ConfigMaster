@@ -1,7 +1,7 @@
 ConfigMaster
 ------------
 
-[![Build Status](https://drone.io/bitbucket.org/SunDwarf/configmaster/status.png)](https://drone.io/bitbucket.org/SunDwarf/configmaster/latest)
+[![Build Status](https://drone.io/github.com/SunDwarf/ConfigMaster/status.png)](https://drone.io/github.com/SunDwarf/ConfigMaster/latest)
 [![PyPI version](https://img.shields.io/pypi/v/ConfigMaster.svg)](https://pypi.python.org/pypi/ConfigMaster/)
 [![PyPI DailyDownloads](https://img.shields.io/pypi/dd/ConfigMaster.svg)](https://pypi.python.org/pypi/ConfigMaster/)
 
@@ -11,7 +11,8 @@ Instead, objects in the file are accessed as simple class attributes.
 
 ### What is supported
 
-ConfigMaster supports the following formats built-in:
+ConfigMaster supports the following formats built-in: 
+ 
  - YAML Config Files (through the `PyYAML` module)
  - JSON Config Files (through `json`)
  - INI Config Files (through `ConfigParser`)
@@ -31,11 +32,16 @@ For the latest stable version uploaded to PyPI, use:
 `pip install configmaster`
   
 For the latest stable version uploaded to bitbucket, use:  
-`pip install hg+https://bitbucket.org/SunDwarf/configmaster`  
+`pip install git+https://github.com/SunDwarf/configmaster`  
 
 For the latest dev version, use:  
-`pip install hg+https://bitbucket.org/SunDwarf/configmaster@dev`
+`pip install git+https://github.com/SunDwarf/configmaster@dev`
 
+After installing, running the tests is recommended.
+
+`
+py.test -rfEsxXw -v --strict test.py
+`
 
 ### How to use
 ConfigMaster handles everything for you. Simply specify the location of your file, and the values will be automatically loaded for you.
