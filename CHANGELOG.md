@@ -1,5 +1,9 @@
 ## ConfigMaster Changelog  
-[*2.0.2*:](https://bitbucket.org/SunDwarf/configmaster/commits/tag/2.0.2-stable)
+[*2.0.3*:](https://github.com/SunDwarf/ConfigMaster/releases/tag/2.0.3)
+
+ - Change JSONConfigFile to use request.json() rather than cfg.request.text and a load() call.
+
+[*2.0.2*:](https://github.com/SunDwarf/ConfigMaster/releases/tag/2.0.2)
 
  - Fixed bug where ConfigFiles would fail on initial_populate due to an empty method.  
 
@@ -17,12 +21,12 @@
     - For networked files, a networked load hook is used for loading from the network.  
     - Additionally, networked files have normal load hooks, for save_to_file().  
   
-[*1.5.0*:](https://bitbucket.org/SunDwarf/configmaster/commits/tag/1.5.0-stable)  
+[*1.5.0*:](https://github.com/SunDwarf/ConfigMaster/releases/tag/1.5.0-stable)  
 
  - Add the ability to save networked files to disk, after downloading.  
  - Fixed .load() not being automatically called on object creation.  
  
-[*1.4.0*:](https://bitbucket.org/SunDwarf/configmaster/commits/tag/1.4.0-stable) 
+[*1.4.0*:](https://github.com/SunDwarf/configmaster/releases/tag/1.4.0-stable) 
  
  - Add INI Config files.  
  - Add safer loading for ConfigKeys.  
