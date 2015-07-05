@@ -1,10 +1,15 @@
 import os
+import sys
 try:
     import requests
     __network = True
 except ImportError:
     __network = False
     raise ImportWarning("Cannot use networked config support. Install requests to enable it.")
+
+# Hack for Python3.2 and below
+if sys.version_info[1] <= 2:
+    FileNotFoundError = IOError
 
 from configmaster import ConfigKey
 from configmaster import exc
