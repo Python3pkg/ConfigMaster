@@ -1,5 +1,6 @@
 import os
 import sys
+
 try:
     import requests
     __network = True
@@ -81,7 +82,8 @@ class ConfigFile(ConfigObject):
 
     It automatically provides opening of the file and creating it if it doesn't exist, and provides a basic reload() method to automatically reload the files from disk.
     """
-    def __init__(self, fd: str, load_hook=None, dump_hook=None  , safe_load: bool=True, json_fix: bool=False):
+
+    def __init__(self, fd: str, load_hook=None, dump_hook=None, safe_load: bool=True, json_fix: bool=False):
         super().__init__(safe_load, load_hook=load_hook, dump_hook=dump_hook)
         # Check if fd is a string
         if isinstance(fd, str):
@@ -107,6 +109,29 @@ class ConfigFile(ConfigObject):
         self.data = self.fd.read()
         self.fd.seek(0)
         self.load()
+
+    def dump(self):
+        # RE-open the file in 'w' mode.
+        if not self.fd.writable():
+            name = self.fd.name
+            self.fd.close()
+            self.fd = open(name, 'w')
+
+        # Call the dump hook.
+        self.dump_hook(self)
+
+        # RE-open the file in 'r' mode.
+        name = self.fd.name
+        self.fd.close()
+        self.fd = open(name, 'r')
+
+    def dumps(self):
+        """
+        Dump config data to string.
+
+        This uses a StringIO virtual file, to ensure compatibility with dump hooks that use file-based dumping.
+        """
+        return self.dump_hook(self, True)
 
     def reload(self):
         """
