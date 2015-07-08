@@ -68,12 +68,21 @@ class ConfigKey(object):
         ndict.pop('safe_load')
         return ndict.values()
 
-    def load_from_dict(self, data: dict):
+    def load_from_dict(self, data: dict, overwrite: bool=True):
+        """
+        Loads key/values from dicts or list into the ConfigKey.
+        :param data: The data object to load.
+                        This can be a dict, or a list of key/value tuples.
+        :param overwrite: Should the ConfigKey overwrite data already in it?
+        """
         if data is None or data == {}:
             return False
         # Loop over items
         for key, item in data.items():
             assert isinstance(key, str)
+            if hasattr(self, key) and not overwrite:
+                # Refuse to overwrite existing data.
+                continue
             # Check name to verify it's safe.
             if self.safe_load:
                 if key.startswith("__") or key in ['dump', 'items', 'keys', 'values',
@@ -84,6 +93,7 @@ class ConfigKey(object):
             if '.' in key:
                 # Doubly evil!
                 key = key.replace('.', '_')
+
             if isinstance(item, dict):
                 # Create a new ConfigKey object with the dict.
                 ncfg = ConfigKey()
