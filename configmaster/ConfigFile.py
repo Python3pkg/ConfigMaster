@@ -3,9 +3,10 @@ import sys
 
 try:
     import requests
-    __network = True
+
+    _has_network = True
 except ImportError:
-    __network = False
+    _has_network = False
     raise ImportWarning("Cannot use networked config support. Install requests to enable it.")
 
 # Hack for Python3.2 and below
@@ -152,6 +153,9 @@ class NetworkedConfigObject(ConfigObject):
     This is commonly used for downloading "default" config files, and applying them to real config files.
     """
     def __init__(self, url: str, normal_class_load_hook, normal_class_dump_hook, load_hook, safe_load: bool=True):
+        if _has_network is False:
+            raise exc.NetworkedFileException("Requests is not installed.")
+
         self.url = url
         # Try and get url.
         try:
