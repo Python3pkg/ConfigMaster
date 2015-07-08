@@ -1,8 +1,6 @@
 import json
 
-from configmaster.ConfigFile import ConfigFile, NetworkedConfigObject
 from configmaster import exc
-
 from .ConfigGenerator import GenerateConfigFile, GenerateNetworkedConfigFile
 
 try:
@@ -42,31 +40,23 @@ def json_load_hook(is_net: bool=False):
         except ValueError as e:
             raise exc.LoaderException("Could not decode JSON file: {}".format(e))
         # Serialize the data into new sets of ConfigKey classes.
-        print(data)
         cfg.config.load_from_dict(data)
 
     return actual_load_hook
 
-def json_dump_hook(cfg):
+
+def json_dump_hook(cfg, text: bool=False):
     """
     Dumps all the data into a JSON file.
     """
-    name = cfg.fd.name
-    cfg.fd.close()
-    cfg.fd = open(name, 'w')
-
     data = cfg.config.dump()
 
-    json.dump(data, cfg.fd)
-    cfg.reload()
+    if not text:
+        json.dump(data, cfg.fd)
+    else:
+        return json.dumps(data)
 
 
 JSONConfigFile = GenerateConfigFile(load_hook=json_load_hook(False), dump_hook=json_dump_hook, json_fix=True)
 NetworkedJSONConfigFile = GenerateNetworkedConfigFile(load_hook=json_load_hook(True),
                         normal_class_load_hook=json_load_hook(False), normal_class_dump_hook=json_dump_hook)
-
-if not __networked_json:
-    def _(*args, **kwargs):
-        raise exc.FiletypeNotSupportedException("Networked JSON support is disabled.")
-
-    NetworkedJSONConfigFile = _
