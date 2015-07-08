@@ -107,6 +107,11 @@ class ConfigFile(ConfigObject):
             self.path = fd.name.replace('/', '.').replace('\\', '.')
         self.fd = fd
 
+        def _dump(*args, **kwargs):
+            raise exc.FiletypeNotSupportedException("YAML Dumper not loaded - hook not called?")
+
+        self.dumper = _dump
+
         self.data = self.fd.read()
         self.fd.seek(0)
         self.load()
