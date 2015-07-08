@@ -90,17 +90,18 @@ def yaml_load_hook(load_net: False):
         cfg.config.load_from_dict(data)
     return actual_load_hook
 
-def yaml_dump_hook(cfg):
+
+def yaml_dump_hook(cfg, text: bool=False):
     """
     Dumps all the data into a YAML file.
     """
-    name = cfg.fd.name
-    cfg.fd.close()
-    cfg.fd = open(name, 'w')
 
     data = cfg.config.dump()
-    yaml.dump(data, cfg.fd, Dumper=cfg.dumper, default_flow_style=False)
-    cfg.reload()
+    if not text:
+        yaml.dump(data, cfg.fd, Dumper=cfg.dumper, default_flow_style=False)
+    else:
+        return yaml.dump(data, Dumper=cfg.dumper, default_flow_style=False)
+
 
 
 YAMLConfigFile = GenerateConfigFile(load_hook=yaml_load_hook(False), dump_hook=yaml_dump_hook)
