@@ -1,5 +1,7 @@
 import copy
 
+from configmaster import exc
+
 
 class ConfigKey(object):
     """
@@ -78,7 +80,16 @@ class ConfigKey(object):
         if data is None or data == {}:
             return False
         # Loop over items
-        for key, item in data.items():
+        if isinstance(data, list) or isinstance(data, tuple):
+            # Pick a random item from the tuple.
+            if len(data[0]) != 2:
+                raise exc.LoaderException("Cannot load data with length {}".format(len(data[0])))
+            items = data
+        elif isinstance(data, dict) or isinstance(data, self.__class__):
+            items = data.items()
+        else:
+            raise exc.LoaderException("Cannot load data of type {}".format(type(data)))
+        for key, item in items:
             assert isinstance(key, str)
             if hasattr(self, key) and not overwrite:
                 # Refuse to overwrite existing data.
@@ -93,7 +104,6 @@ class ConfigKey(object):
             if '.' in key:
                 # Doubly evil!
                 key = key.replace('.', '_')
-
             if isinstance(item, dict):
                 # Create a new ConfigKey object with the dict.
                 ncfg = ConfigKey()
