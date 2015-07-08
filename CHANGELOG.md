@@ -1,4 +1,8 @@
 ## ConfigMaster Changelog  
+[*2.1.0*:](https://github.com/SunDwarf/ConfigMaster/releases/tag/2.1.0)
+
+ - Fix dumps.
+ 
 [*2.0.4*:](https://github.com/SunDwarf/ConfigMaster/releases/tag/2.0.4)
 
  - Fix for Python 3.2 and lower.
