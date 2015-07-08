@@ -3,13 +3,6 @@ import json
 from configmaster import exc
 from .ConfigGenerator import GenerateConfigFile, GenerateNetworkedConfigFile
 
-try:
-    import requests
-
-    __networked_json = True
-except ImportError:
-    __networked_json = False
-    raise ImportWarning("Cannot use networked JSON support. Install requests to enable it.")
 
 def json_load_hook(is_net: bool=False):
     def actual_load_hook(cfg):

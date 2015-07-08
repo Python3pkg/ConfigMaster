@@ -2,11 +2,11 @@ from setuptools import setup
 
 setup(
     name="ConfigMaster",
-    version='2.1.0',
+    version='2.1.1',
     description="Programmatic configuration library for Python 3.",
-    author=" ",
+    author="Isaac Dickinson",
     author_email="eyesismine@gmail.com",
-    url="https://bitbucket.org/SunDwarf/configmaster",
+    url="https://github.com/SunDwarf/ConfigMaster",
     packages=["configmaster"],
     license="MIT",
 )

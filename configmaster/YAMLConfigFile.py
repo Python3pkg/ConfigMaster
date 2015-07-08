@@ -106,4 +106,5 @@ def yaml_dump_hook(cfg, text: bool=False):
 
 YAMLConfigFile = GenerateConfigFile(load_hook=yaml_load_hook(False), dump_hook=yaml_dump_hook)
 NetworkedYAMLConfigFile = GenerateNetworkedConfigFile(load_hook=yaml_load_hook(True),
-                        normal_class_load_hook=yaml_load_hook(True), normal_class_dump_hook=yaml_dump_hook)
+                                                      normal_class_load_hook=yaml_load_hook(False),
+                                                      normal_class_dump_hook=yaml_dump_hook)
