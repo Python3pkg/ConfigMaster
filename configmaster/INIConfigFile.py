@@ -1,8 +1,8 @@
 import configparser
-from configmaster import ConfigFile
-from configmaster import exc
 
+from configmaster import exc
 from .ConfigGenerator import GenerateConfigFile
+
 
 def ini_load_hook(cfg):
     """
@@ -37,16 +37,12 @@ def ini_load_hook(cfg):
     cfg.config.load_from_dict(tmpdict)
 
 
-def ini_dump_hook(cfg):
+def ini_dump_hook(cfg, text: bool=False):
     """
     Dumps all the data into a INI file.
 
     This will automatically kill anything with a '_' in the keyname, replacing it with a dot. You have been warned.
     """
-    name = cfg.fd.name
-    cfg.fd.close()
-    cfg.fd = open(name, 'w')
-
     data = cfg.config.dump()
 
     # Load data back into the goddamned ini file.
@@ -57,8 +53,10 @@ def ini_dump_hook(cfg):
 
     cfg.tmpini = configparser.ConfigParser()
     cfg.tmpini.read_dict(data)
-
-    cfg.tmpini.write(cfg.fd)
+    if not text:
+        cfg.tmpini.write(cfg.fd)
+    else:
+        return
     cfg.reload()
 
 INIConfigFile = GenerateConfigFile(load_hook=ini_load_hook, dump_hook=ini_dump_hook)
