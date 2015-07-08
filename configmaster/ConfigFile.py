@@ -77,6 +77,18 @@ class ConfigObject(object):
         self.config.load_from_dict(data)
         return True
 
+    def apply_defaults(self, other_config):
+        """
+        Applies default values from a different ConfigObject or ConfigKey object to this ConfigObject.
+
+        If there are any values in this object that are also in the default object, it will use the values from this object.
+        """
+        if isinstance(other_config, self):
+            self.config.load_from_dict(other_config.config, overwrite=False)
+        else:
+            self.config.load_from_dict(other_config, overwrite=False)
+
+
 class ConfigFile(ConfigObject):
     """
     The abstract base class for a ConfigFile object. All config files extend from this.

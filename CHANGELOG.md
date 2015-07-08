@@ -1,5 +1,9 @@
 ## ConfigMaster Changelog  
-[*2.1.0*:](https://github.com/SunDwarf/ConfigMaster/releases/tag/2.1.0)
+[*2.2.0*](https://github.com/SunDwarf/ConfigMaster/releases/tag/2.2.0):
+
+ - Add support for loading defaults into ConfigObjects.
+
+*2.1.0*:
 
  - Fix dumps.
  
