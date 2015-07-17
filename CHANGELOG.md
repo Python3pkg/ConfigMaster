@@ -1,5 +1,9 @@
 ## ConfigMaster Changelog  
-[*2.2.0*](https://github.com/SunDwarf/ConfigMaster/releases/tag/2.2.0):
+[*2.2.1:*](https://github.com/SunDwarf/ConfigMaster/releases/tag/2.2.0)
+
+ - Add __setitem__ and __getitem__ to ConfigKeys.
+
+[*2.2.0:*](https://github.com/SunDwarf/ConfigMaster/releases/tag/2.2.0)
 
  - Add support for loading defaults into ConfigObjects.
 

@@ -70,6 +70,12 @@ class ConfigKey(object):
         ndict.pop('safe_load')
         return ndict.values()
 
+    def __getitem__(self, item):
+        return getattr(self, item)
+
+    def __setitem__(self, key, value):
+        setattr(self, key, value)
+
     def load_from_dict(self, data: dict, overwrite: bool=True):
         """
         Loads key/values from dicts or list into the ConfigKey.

@@ -15,7 +15,7 @@ def GenerateConfigFile(load_hook, dump_hook, **kwargs) -> ConfigFile:
 
     return ConfigFileGenerator
 
-def GenerateNetworkedConfigFile(load_hook, normal_class_load_hook, normal_class_dump_hook, **kwargs):
+def GenerateNetworkedConfigFile(load_hook, normal_class_load_hook, normal_class_dump_hook, **kwargs) -> NetworkedConfigObject:
     """
     Generates a NetworkedConfigObject using the specified hooks.
     """
