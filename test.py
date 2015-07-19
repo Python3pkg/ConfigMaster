@@ -82,6 +82,13 @@ def test_embedded_dict():
     assert cfg.config.edc.op == 4
     assert cfg.config.edc.po == 6
 
+
+def test_embedded_dict_getitem():
+    cfg = JSONConfigFile("test_data/test.json")
+    assert isinstance(cfg.config['edc'], ConfigKey)
+    assert cfg.config['edc'].op == 4
+    assert cfg.config['edc.po'] == 6
+
 def test_embedded_list():
     cfg = JSONConfigFile("test_data/test.json")
     assert isinstance(cfg.config.fruit, list)
