@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name="ConfigMaster",
-    version='2.2.2',
+    version='2.2.2.post1',
     description="Programmatic configuration library for Python 3.",
     author="Isaac Dickinson",
     author_email="eyesismine@gmail.com",
