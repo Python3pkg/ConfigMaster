@@ -41,10 +41,10 @@ How to install
 | ``pip install configmaster``
 
 | For the latest stable version uploaded to bitbucket, use:
-| ``pip install git+https://github.com/SunDwarf/configmaster``
+| ``pip install git+ssh://cloning@git.sundwarf.me/SunDwarf/configmaster``
 
 | For the latest dev version, use:
-| ``pip install git+https://github.com/SunDwarf/configmaster@dev``
+| ``pip install git+ssh://cloning@git.sundwarf.me/SunDwarf/configmaster@develop``
 
 After installing, running the tests is recommended.
 
