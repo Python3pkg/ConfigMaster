@@ -30,7 +30,7 @@ def cload_load(fd):
     return yaml.load(fd, Loader=yaml.CLoader)
 
 
-def yaml_load_hook(load_net: False):
+def yaml_load_hook(load_net: False, **kwargs):
     def actual_load_hook(cfg: ConfigFile):
         """
         This handles automatically opening/creating the YAML configuration files.

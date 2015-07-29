@@ -4,7 +4,7 @@ from configmaster import exc
 from .ConfigGenerator import GenerateConfigFile
 
 
-def ini_load_hook(cfg):
+def ini_load_hook(cfg, **kwargs):
     """
     This handles automatically opening/creating the INI configuration files.
 

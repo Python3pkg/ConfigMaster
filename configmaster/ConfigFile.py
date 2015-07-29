@@ -32,7 +32,7 @@ class ConfigObject(object):
         - Need to call the load/dump hooks? Get them via load_hook or dump_hook.
     """
 
-    def __init__(self, safe_load: bool=True, load_hook=None, dump_hook=None):
+    def __init__(self, safe_load: bool=True, load_hook=None, dump_hook=None, **kwargs):
         self.safe_load = safe_load
         self.load_hook = load_hook
         self.dump_hook = dump_hook
@@ -51,11 +51,11 @@ class ConfigObject(object):
         """
         return self.config.dump()
 
-    def load(self):
+    def load(self, **kwargs):
         """
         This loads the config file using the hook provided. The ConfigObject object is passed in as argument one.
         """
-        return self.load_hook(self)
+        return self.load_hook(self, **kwargs)
 
     def dump(self):
         """
@@ -96,7 +96,7 @@ class ConfigFile(ConfigObject):
     It automatically provides opening of the file and creating it if it doesn't exist, and provides a basic reload() method to automatically reload the files from disk.
     """
 
-    def __init__(self, fd: str, load_hook=None, dump_hook=None, safe_load: bool=True, json_fix: bool=False):
+    def __init__(self, fd: str, load_hook=None, dump_hook=None, safe_load: bool=True, json_fix: bool=False, **kwargs):
         super().__init__(safe_load, load_hook=load_hook, dump_hook=dump_hook)
         # Check if fd is a string
         if isinstance(fd, str):
@@ -126,7 +126,7 @@ class ConfigFile(ConfigObject):
 
         self.data = self.fd.read()
         self.fd.seek(0)
-        self.load()
+        self.load(**kwargs)
 
     def dump(self):
         # RE-open the file in 'w' mode.
@@ -169,7 +169,9 @@ class NetworkedConfigObject(ConfigObject):
 
     This is commonly used for downloading "default" config files, and applying them to real config files.
     """
-    def __init__(self, url: str, normal_class_load_hook, normal_class_dump_hook, load_hook, safe_load: bool=True):
+
+    def __init__(self, url: str, normal_class_load_hook, normal_class_dump_hook, load_hook, safe_load: bool=True,
+                 **kwargs):
         if _has_network is False:
             raise exc.NetworkedFileException("Requests is not installed.")
 
@@ -189,7 +191,7 @@ class NetworkedConfigObject(ConfigObject):
 
         self.data = self.request.text
 
-        self.load()
+        self.load(**kwargs)
 
     def dump(self):
         raise exc.NetworkedFileException("Cannot write to a networked file.")

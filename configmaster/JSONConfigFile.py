@@ -5,7 +5,7 @@ from .ConfigGenerator import GenerateConfigFile, GenerateNetworkedConfigFile
 
 
 def json_load_hook(is_net: bool=False):
-    def actual_load_hook(cfg):
+    def actual_load_hook(cfg, **kwargs):
         """
         This handles automatically opening/creating the JSON configuration files.
 
