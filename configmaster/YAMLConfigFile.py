@@ -1,3 +1,5 @@
+from configmaster import exc
+
 try:
     import yaml
     import yaml.scanner
@@ -6,8 +8,6 @@ except ImportError:
         "You have not installed the PyYAML library. Install it via `pip install PyYAML`.")
 
 from configmaster.ConfigFile import ConfigFile, NetworkedConfigObject
-
-from configmaster import exc
 
 from configmaster.ConfigGenerator import GenerateConfigFile, GenerateNetworkedConfigFile
 
