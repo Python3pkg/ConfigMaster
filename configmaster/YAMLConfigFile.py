@@ -5,11 +5,11 @@ except ImportError:
     raise exc.FiletypeNotSupportedException(
         "You have not installed the PyYAML library. Install it via `pip install PyYAML`.")
 
-from .ConfigFile import ConfigFile, NetworkedConfigObject
+from configmaster.ConfigFile import ConfigFile, NetworkedConfigObject
 
-from . import exc
+from configmaster import exc
 
-from .ConfigGenerator import GenerateConfigFile, GenerateNetworkedConfigFile
+from configmaster.ConfigGenerator import GenerateConfigFile, GenerateNetworkedConfigFile
 
 
 def cload_safe(fd):

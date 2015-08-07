@@ -1,7 +1,7 @@
 import json
 
 from configmaster import exc
-from .ConfigGenerator import GenerateConfigFile, GenerateNetworkedConfigFile
+from configmaster.ConfigGenerator import GenerateConfigFile, GenerateNetworkedConfigFile
 
 
 def json_load_hook(is_net: bool=False):

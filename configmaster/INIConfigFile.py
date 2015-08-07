@@ -1,7 +1,7 @@
 import configparser
 
 from configmaster import exc
-from .ConfigGenerator import GenerateConfigFile
+from configmaster.ConfigGenerator import GenerateConfigFile
 
 
 def ini_load_hook(cfg, **kwargs):

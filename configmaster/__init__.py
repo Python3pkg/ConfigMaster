@@ -1,3 +1,1 @@
-
-class LoaderException(Exception): pass
-class WriterException(Exception): pass
+from . import YAMLConfigFile, JSONConfigFile, INIConfigFile, SPyCfg

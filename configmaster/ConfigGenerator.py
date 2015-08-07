@@ -1,4 +1,4 @@
-from .ConfigFile import ConfigFile, NetworkedConfigObject
+from configmaster.ConfigFile import ConfigFile, NetworkedConfigObject
 
 def GenerateConfigFile(load_hook, dump_hook, **kwargs) -> ConfigFile:
     """
