@@ -1,5 +1,6 @@
 import os
 import sys
+import warnings
 
 try:
     import requests
@@ -7,7 +8,7 @@ try:
     _has_network = True
 except ImportError:
     _has_network = False
-    raise ImportWarning("Cannot use networked config support. Install requests to enable it.")
+    warnings.warn("Cannot use networked config support. Install requests to enable it.", ImportWarning)
 
 # Hack for Python3.2 and below
 if sys.version_info[1] <= 2:
