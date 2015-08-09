@@ -84,7 +84,7 @@ class ConfigObject(object):
 
         If there are any values in this object that are also in the default object, it will use the values from this object.
         """
-        if isinstance(other_config, self):
+        if isinstance(other_config, self.__class__):
             self.config.load_from_dict(other_config.config, overwrite=False)
         else:
             self.config.load_from_dict(other_config, overwrite=False)

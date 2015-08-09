@@ -31,7 +31,7 @@ Support for different types of config files grows all the time - feel free to fo
 For the latest stable version uploaded to PyPI, use:  
 `pip install configmaster`
   
-For the latest stable version uploaded to bitbucket, use:  
+For the latest stable version uploaded to git, use:  
 `pip install git+ssh://cloning@git.sundwarf.me/SunDwarf/configmaster`  
 
 For the latest dev version, use:  
