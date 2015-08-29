@@ -33,7 +33,8 @@ setup(
     license="MIT",
     tests_require=["pytest",
                    "pytest-cov",
-                   "python-coveralls"],
+                   "python-coveralls",
+                   "coveralls"],
     classifiers=[
         "Development Status :: 5 - Production/Stable",
         "License :: OSI Approved :: MIT License",
