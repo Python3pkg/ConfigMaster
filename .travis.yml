@@ -4,7 +4,7 @@ python:
   - "3.3"
   - "3.4"
 # command to install dependencies
-install: "pip install -q -U PyYAML requests"
+install: "pip install -q -U PyYAML requests coveralls"
 # command to run tests
 script: "coverage run --source=configmaster setup.py test"
 after_success: "coveralls"
