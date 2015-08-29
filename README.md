@@ -4,6 +4,7 @@ ConfigMaster
 [![Build Status](https://travis-ci.org/SunDwarf/ConfigMaster.svg?branch=master)](https://travis-ci.org/SunDwarf/ConfigMaster)
 [![PyPI version](https://img.shields.io/pypi/v/ConfigMaster.svg)](https://pypi.python.org/pypi/ConfigMaster/)
 [![PyPI DailyDownloads](https://img.shields.io/pypi/dd/ConfigMaster.svg)](https://pypi.python.org/pypi/ConfigMaster/)
+[![Coverage Status](https://coveralls.io/repos/SunDwarf/ConfigMaster/badge.svg?branch=master&service=github)](https://coveralls.io/github/SunDwarf/ConfigMaster?branch=master)
 
 ## What is ConfigMaster?  
 ConfigMaster is a simple library for accessing config files programmatically. No longer will you have to mess with list lookups and dict lookups when you wish to load a config file.  
