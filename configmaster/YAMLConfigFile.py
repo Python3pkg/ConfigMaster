@@ -82,10 +82,10 @@ def yaml_load_hook(load_net: False, **kwargs):
                 data = loader(cfg.request.text)
             else:
                 raise exc.LoaderException("No data source to load from.")
-        except UnicodeDecodeError:
-            raise exc.LoaderException("Selected file was not in a valid encoding format.")
-        except yaml.scanner.ScannerError:
-            raise exc.LoaderException("Selected file had invalid YAML tokens.")
+        except UnicodeDecodeError as e:
+            raise exc.LoaderException("Selected file was not in a valid encoding format.") from e
+        except yaml.scanner.ScannerError as e:
+            raise exc.LoaderException("Selected file had invalid YAML tokens.") from e
         # Serialize the data into new sets of ConfigKey classes.
         cfg.config.load_from_dict(data)
     return actual_load_hook

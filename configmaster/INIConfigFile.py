@@ -26,7 +26,7 @@ def ini_load_hook(cfg, **kwargs):
     try:
         cfg.tmpini.read_file(cfg.fd)
     except ValueError as e:
-        raise exc.LoaderException("Could not decode INI file: {}".format(e))
+        raise exc.LoaderException("Could not decode INI file: {}".format(e)) from e
     # Sanitize data.
     tmpdict = {}
     for name in cfg.tmpini.sections():

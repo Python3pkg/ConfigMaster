@@ -24,7 +24,7 @@ class PyTest(TestCommand):
 
 setup(
     name="ConfigMaster",
-    version='2.3.5.post1',
+    version='2.3.6',
     description="Programmatic configuration library for Python 3.",
     author="Isaac Dickinson",
     author_email="eyesismine@gmail.com",

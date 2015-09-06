@@ -1,4 +1,8 @@
 ## ConfigMaster Changelog  
+[*2.3.6:*](https://github.com/SunDwarf/ConfigMaster/releases/tag/2.3.6)
+
+ - Fix 
+
 [*2.2.1:*](https://github.com/SunDwarf/ConfigMaster/releases/tag/2.2.0)
 
  - Add __setitem__ and __getitem__ to ConfigKeys.

@@ -3,6 +3,14 @@ import json
 from configmaster import exc
 from configmaster.ConfigGenerator import GenerateConfigFile, GenerateNetworkedConfigFile
 
+import sys
+
+# Fix for 3.5
+if sys.version_info < (3, 5):
+    JSONDecodeError = ValueError
+else:
+    JSONDecodeError = json.JSONDecodeError
+
 
 def json_load_hook(is_net: bool=False):
     def actual_load_hook(cfg, **kwargs):
@@ -30,8 +38,8 @@ def json_load_hook(is_net: bool=False):
                 data = json.load(cfg.fd)
             else:
                 data = cfg.request.json()
-        except ValueError as e:
-            raise exc.LoaderException("Could not decode JSON file: {}".format(e))
+        except JSONDecodeError as e:
+            raise exc.LoaderException("Could not decode JSON file: {}".format(e)) from e
         # Serialize the data into new sets of ConfigKey classes.
         cfg.config.load_from_dict(data)
 
