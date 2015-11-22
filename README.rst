@@ -113,8 +113,8 @@ Need to get the raw dict form of a ConfigKey? Use .dump() on that!
     >>> cfg.config.c.dump()
     {"d": 3}
 
-.. |Build Status| image:: https://travis-ci.org/SunDwarf/ConfigMaster.svg?branch=master
-   :target: https://travis-ci.org/SunDwarf/ConfigMaster
+.. |Build Status| image:: https://img.shields.io/circleci/project/SunDwarf/ButterflyNet.svg
+   :target: https://circleci.com/gh/SunDwarf/ConfigMaster/
 .. |PyPI version| image:: https://img.shields.io/pypi/v/ConfigMaster.svg
    :target: https://pypi.python.org/pypi/ConfigMaster/
 .. |PyPI DailyDownloads| image:: https://img.shields.io/pypi/dd/ConfigMaster.svg

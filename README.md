@@ -1,7 +1,7 @@
 ConfigMaster
 ------------
 
-[![Build Status](https://travis-ci.org/SunDwarf/ConfigMaster.svg?branch=master)](https://travis-ci.org/SunDwarf/ConfigMaster)
+[![Build Status](https://img.shields.io/circleci/project/SunDwarf/ButterflyNet.svg)](https://circleci.com/gh/SunDwarf/ConfigMaster/)
 [![PyPI version](https://img.shields.io/pypi/v/ConfigMaster.svg)](https://pypi.python.org/pypi/ConfigMaster/)
 [![PyPI DailyDownloads](https://img.shields.io/pypi/dd/ConfigMaster.svg)](https://pypi.python.org/pypi/ConfigMaster/)
 [![Coverage Status](https://coveralls.io/repos/SunDwarf/ConfigMaster/badge.svg?branch=master&service=github)](https://coveralls.io/github/SunDwarf/ConfigMaster?branch=master)
