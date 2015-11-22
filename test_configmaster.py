@@ -15,6 +15,8 @@ from configmaster.ConfigKey import ConfigKey
 from configmaster.JSONConfigFile import JSONConfigFile
 
 from configmaster.INIConfigFile import INIConfigFile
+from configmaster import exc
+
 try:
     from configmaster.YAMLConfigFile import YAMLConfigFile
     __has_yaml = True
@@ -23,7 +25,7 @@ except exc.FiletypeNotSupportedException:
 
 from configmaster.JSONConfigFile import NetworkedJSONConfigFile
 
-from configmaster import exc
+
 
 def test_loading_valid_json():
     cfg = JSONConfigFile("test_data/test.json")

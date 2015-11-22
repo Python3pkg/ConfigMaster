@@ -8,5 +8,5 @@ python:
 # command to install dependencies
 install: "pip install -q -U PyYAML requests coveralls"
 # command to run tests
-script: "coverage run --source=configmaster setup.py test"
+script: "tox"
 after_success: "coveralls"
