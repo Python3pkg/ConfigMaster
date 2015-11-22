@@ -3,4 +3,9 @@ dependencies:
     - pyenv local 3.3.3 3.4.3 3.5.0
     - pip install --upgrade tox
     - pip install --upgrade tox-pyenv
+    - pip install python-coveralls
+
+test:
+  post:
+    - coveralls
 
