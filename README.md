@@ -75,7 +75,7 @@ To populate your config data, just pass a dict to initial_populate. If the file 
 *Note: This will fail with an exc.NetworkedFileException on networked files!*
 
 ```
->>> pop = cfg.initial_populate({"a": 1, "b": [1, 2], "c": {"d": 3})
+>>> pop = cfg.initial_populate({"a": 1, "b": [1, 2], "c": {"d": 3}})
 >>> if pop: cfg.dump() and cfg.reload() # Dump data and reload from disk.
 ```
 
