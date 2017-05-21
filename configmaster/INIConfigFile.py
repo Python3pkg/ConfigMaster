@@ -47,7 +47,7 @@ def ini_dump_hook(cfg, text: bool=False):
 
     # Load data back into the goddamned ini file.
     ndict = {}
-    for key, item in data.items():
+    for key, item in list(data.items()):
         key = key.replace('_', '.')
         ndict[key] = item
 

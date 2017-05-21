@@ -56,19 +56,19 @@ class ConfigKey(object):
         ndict = copy.copy(self.__dict__)
         ndict.pop('parsed')
         ndict.pop('safe_load')
-        return ndict.items()
+        return list(ndict.items())
 
     def keys(self):
         ndict = copy.copy(self.__dict__)
         ndict.pop('parsed')
         ndict.pop('safe_load')
-        return ndict.keys()
+        return list(ndict.keys())
 
     def values(self):
         ndict = copy.copy(self.__dict__)
         ndict.pop('parsed')
         ndict.pop('safe_load')
-        return ndict.values()
+        return list(ndict.values())
 
     def __getitem__(self, item):
         return getattr(self, item)
@@ -92,7 +92,7 @@ class ConfigKey(object):
                 raise exc.LoaderException("Cannot load data with length {}".format(len(data[0])))
             items = data
         elif isinstance(data, dict) or isinstance(data, self.__class__):
-            items = data.items()
+            items = list(data.items())
         else:
             raise exc.LoaderException("Cannot load data of type {}".format(type(data)))
         for key, item in items:
